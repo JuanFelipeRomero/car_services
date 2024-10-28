@@ -20,7 +20,7 @@ export function NavBar() {
             Contacto
           </a>
         </div>
-        <a href="/login" className="text-white font-medium">
+        <a href="/registerwelcome" className="text-white font-medium">
           {isLogged ? 'User' : 'Iniciar sesion'}
         </a>
       </nav>
