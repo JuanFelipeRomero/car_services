@@ -30,28 +30,39 @@ export function HomePage() {
           Nuestros servicios
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:p-32 lg:p-36">
-          <ServiceCard
-            title={'Polarizados'}
-            description={'Protección solar y privacidad para tu vehículo.'}
-            image={'bg-polarizedCard'}
-          />
-          <ServiceCard
-            title={'Alarmas'}
-            description={'La seguridad que tu vehículo necesita.'}
-            image={'bg-alarmCard'}
-          />
-          <ServiceCard
-            title={'Radios'}
-            description={
-              'Actualiza tu sistema de sonido con lo mejor en tecnología.'
-            }
-            image={'bg-alarmCard'} // Puedes cambiar esto si tienes una imagen diferente para "Radios"
-          />
-          <ServiceCard
-            title={'Avisos'}
-            description={'Personaliza tu vehículo con diseños de calidad.'}
-            image={'bg-avisosCard'}
-          />
+          <a href="/polarizedinfo">
+            <ServiceCard
+              title={'Polarizados'}
+              description={'Protección solar y privacidad para tu vehículo.'}
+              image={'bg-polarizedCard'}
+            />
+          </a>
+
+          <a href="">
+            <ServiceCard
+              title={'Alarmas'}
+              description={'La seguridad que tu vehículo necesita.'}
+              image={'bg-alarmCard'}
+            />
+          </a>
+
+          <a href="">
+            <ServiceCard
+              title={'Radios'}
+              description={
+                'Actualiza tu sistema de sonido con lo mejor en tecnología.'
+              }
+              image={'bg-alarmCard'} // Puedes cambiar esto si tienes una imagen diferente para "Radios"
+            />
+          </a>
+
+          <a href="">
+            <ServiceCard
+              title={'Avisos'}
+              description={'Personaliza tu vehículo con diseños de calidad.'}
+              image={'bg-avisosCard'}
+            />
+          </a>
         </div>
       </section>
     </>

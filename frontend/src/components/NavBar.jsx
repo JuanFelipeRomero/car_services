@@ -5,7 +5,7 @@ export function NavBar() {
 
   return (
     <>
-      <nav className=" h-20 flex justify-around items-center">
+      <nav className=" h-24 flex justify-around items-center">
         <span className="font-kanit font-bold italic text-white lg:text-4xl md:text-3xl">
           CarServices
         </span>
