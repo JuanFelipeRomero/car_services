@@ -23,13 +23,10 @@ export function HomePage() {
         </section>
       </section>
       <section>
-        <h2
-          id="servicesCards"
-          className="text-center font-semibold md:text-[45px] mt-32"
-        >
+        <h2 id="servicesCards" className="text-center my-20">
           Nuestros servicios
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:p-32 lg:p-36">
+        <div className="grid grid-cols-1 mb-32 md:grid-cols-2 lg:grid-cols-4 gap-8 md:px-32 lg:px-36">
           <a href="/polarizedinfo">
             <ServiceCard
               title={'Polarizados'}

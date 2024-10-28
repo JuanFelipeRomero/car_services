@@ -83,4 +83,7 @@
 
 /*ESTILOS PARA COMPONENTES PROPIOS*/
 @layer base {
+  h2 {
+    @apply font-bold md:text-[40px] mb-12;
+  }
 }
