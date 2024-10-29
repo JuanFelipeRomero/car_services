@@ -4,3 +4,10 @@
   background-position: center;
   height: 100vh;
 }
+
+.login-bg {
+  background-image: url('./src/assets/loginbackground.png');
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+}

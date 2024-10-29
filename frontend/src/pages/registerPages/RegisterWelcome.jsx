@@ -5,7 +5,7 @@ export function RegisterWelcome() {
   return (
     <>
       <main className="h-screen w-full welcome-bg pt-8">
-        <a href="/" className="text-white font-medium pl-20 ">
+        <a href={'/'} className="text-white font-medium pl-20">
           Atras
         </a>
         <section className="h-[80%] grid items-center pl-[10%]">
@@ -18,9 +18,9 @@ export function RegisterWelcome() {
             </h1>
             <div className="w-1/4 text-center">
               <Button className="bg-white text-primary hover:text-secondary mt-12 w-52 h-12">
-                <a href="">Empezar Ahora</a>
+                <a href="/registerpersonalinfo">Empezar Ahora</a>
               </Button>
-              <a href="" className="block font-medium text-white mt-8">
+              <a href="/login" className="block font-medium text-white mt-8">
                 Iniciar sesion
               </a>
             </div>
