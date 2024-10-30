@@ -1,0 +1,9 @@
+POST http://localhost:3000/register/personal-info
+Content-Type: application/json
+
+{
+    "nombre": "Juan",
+    "apellido": "Pérez",
+    "email": "juan.perez@example.com",
+    "telefono": "123456789"
+}
