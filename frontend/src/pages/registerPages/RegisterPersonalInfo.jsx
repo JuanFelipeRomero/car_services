@@ -48,7 +48,7 @@ export function PersonalInfoForm() {
 
   return (
     <main className="pt-8">
-      <a href="/registerwelcome" className="text-black font-medium pl-20">
+      <a href="/polarizedinfo" className="text-black font-medium pl-20">
         Atras
       </a>
       <h1 className="text-center font-medium md:text-[40px] mt-32">

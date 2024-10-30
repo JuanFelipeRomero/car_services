@@ -57,7 +57,7 @@ export function PolarizedInfo() {
               alt="imagen camioneta polarizada"
             />
             <Button className="bg-white text-primary hover:text-secondary m-auto lg:w-48 md:h-12">
-              <a>Agenda Cita</a>
+              <a href="selectcar">Agenda Cita</a>
             </Button>
           </div>
         </section>

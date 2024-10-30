@@ -8,6 +8,8 @@ import { PersonalInfoForm } from './pages/registerPages/RegisterPersonalInfo';
 import { VehicleInfoForm } from './pages/registerPages/RegisterVehicleInfo';
 import { LoginPage } from './pages/LoginPage';
 
+import { SelectVehicle } from './pages/appointmentPages/SelectVehicle';
+
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 const router = createBrowserRouter([
@@ -34,6 +36,12 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: <LoginPage />,
+  },
+
+  // ----- rutas agendamiento citas -----
+  {
+    path: '/selectcar',
+    element: <SelectVehicle />,
   },
 ]);
 
