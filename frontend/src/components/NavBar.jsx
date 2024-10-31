@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useState } from 'react';
 
 export function NavBar() {
@@ -10,9 +11,9 @@ export function NavBar() {
           CarServices
         </span>
         <div className="w-[50%] flex justify-around ">
-          <a href="/" className="text-white lg:text-[18px]">
+          <Link to="/" className="text-white lg:text-[18px]">
             Inicio
-          </a>
+          </Link>
           <a href="#" className="text-white lg:text-[18px]">
             ¿Quienes somos?
           </a>
@@ -20,9 +21,9 @@ export function NavBar() {
             Contacto
           </a>
         </div>
-        <a href="/registerwelcome" className="text-white font-medium">
+        <Link to="/registerwelcome" className="text-white font-medium">
           {isLogged ? 'User' : 'Iniciar sesion'}
-        </a>
+        </Link>
       </nav>
     </>
   );

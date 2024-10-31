@@ -1,13 +1,14 @@
 import { Button } from '@/components/ui/button';
 import '../../App.css';
+import { Link } from 'react-router-dom';
 
 export function RegisterWelcome() {
   return (
     <>
       <main className="h-screen w-full welcome-bg pt-8">
-        <a href={'/'} className="text-white font-medium pl-20">
+        <Link href={'/'} className="text-white font-medium pl-20">
           Atras
-        </a>
+        </Link>
         <section className="h-[80%] grid items-center pl-[10%]">
           <div className="md:w-3/5">
             <p className="text-white md:text-[24px] mb-8">
@@ -20,9 +21,9 @@ export function RegisterWelcome() {
               <Button className="bg-white text-primary hover:text-secondary mt-12 w-52 h-12">
                 <a href="/registerpersonalinfo">Empezar Ahora</a>
               </Button>
-              <a href="/login" className="block font-medium text-white mt-8">
+              <Link to="/login" className="block font-medium text-white mt-8">
                 Iniciar sesion
-              </a>
+              </Link>
             </div>
           </div>
         </section>

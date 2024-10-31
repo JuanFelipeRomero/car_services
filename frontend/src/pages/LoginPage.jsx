@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import '../App.css';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -79,12 +80,12 @@ export function LoginPage() {
             </Button>
           </form>
         </Form>
-        <a
-          href="/registerwelcome"
+        <Link
+          to="/registerwelcome"
           className="text-white text-center block mt-8"
         >
           Registrarse
-        </a>
+        </Link>
       </main>
     </>
   );

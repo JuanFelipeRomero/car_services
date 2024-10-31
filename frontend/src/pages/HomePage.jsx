@@ -2,6 +2,7 @@ import { NavBar } from '../components/NavBar';
 import { Button } from '@/components/ui/button';
 import { ServiceCard } from '../components/ServiceCard';
 import '../styles/cardsStyles.css';
+import { Link } from 'react-router-dom';
 
 export function HomePage() {
   return (
@@ -27,13 +28,13 @@ export function HomePage() {
           Nuestros servicios
         </h2>
         <div className="grid grid-cols-1 mb-32 md:grid-cols-2 lg:grid-cols-4 gap-8 md:px-32 lg:px-36">
-          <a href="/polarizedinfo">
+          <Link to="/polarizedinfo">
             <ServiceCard
               title={'Polarizados'}
               description={'Protección solar y privacidad para tu vehículo.'}
               image={'bg-polarizedCard'}
             />
-          </a>
+          </Link>
 
           <a href="">
             <ServiceCard

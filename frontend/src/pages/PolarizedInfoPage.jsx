@@ -2,6 +2,7 @@ import { NavBar } from '../components/NavBar';
 import { Button } from '@/components/ui/button';
 import { InfoCard } from '../components/InfoCard';
 import { PolarizedProductCard } from '@/components/PolarizedProductCard';
+import { Link } from 'react-router-dom';
 
 export function PolarizedInfo() {
   return (
@@ -57,7 +58,7 @@ export function PolarizedInfo() {
               alt="imagen camioneta polarizada"
             />
             <Button className="bg-white text-primary hover:text-secondary m-auto lg:w-48 md:h-12">
-              <a href="selectcar">Agenda Cita</a>
+              <Link to="/selectcar">Agenda Cita</Link>
             </Button>
           </div>
         </section>

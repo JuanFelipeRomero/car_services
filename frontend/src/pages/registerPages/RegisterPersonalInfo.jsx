@@ -13,6 +13,8 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
+import { Link } from 'react-router-dom';
+
 // Definimos el esquema con zod
 const formSchema = z.object({
   nombre: z.string().min(2, {
@@ -48,9 +50,9 @@ export function PersonalInfoForm() {
 
   return (
     <main className="pt-8">
-      <a href="/polarizedinfo" className="text-black font-medium pl-20">
+      <Link to="/polarizedinfo" className="text-black font-medium pl-20">
         Atras
-      </a>
+      </Link>
       <h1 className="text-center font-medium md:text-[40px] mt-32">
         Información Personal
       </h1>
@@ -125,7 +127,7 @@ export function PersonalInfoForm() {
 
           {/* Botón de Enviar */}
           <Button type="submit" className="w-full">
-            <a href="/registervehicleinfo">Continuar</a>
+            <Link to="/registervehicleinfo">Continuar</Link>
           </Button>
         </form>
       </Form>

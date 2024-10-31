@@ -1,13 +1,14 @@
 import { SelectVehicleCard } from '@/components/SelectVehicleCard';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 export function SelectVehicle() {
   return (
     <>
       <main className="pt-8">
-        <a href="/polarizedinfo" className="text-black font-medium pl-20">
+        <Link to="/polarizedinfo" className="text-black font-medium pl-20">
           Atras
-        </a>
+        </Link>
         <h1 className=" font-bold md:text-4xl pl-32 mt-12">
           Polarizado de Alta Calidad
         </h1>
