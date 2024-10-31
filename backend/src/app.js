@@ -10,10 +10,10 @@ const app = express();
 
 // Configuración de la base de datos
 const dbOptions = {
-    host: 'localhost',      // Conectado localmente a XAMPP
-    user: 'root',           // Usuario predeterminado de XAMPP para MySQL
-    password: '',           // Contraseña vacía, a menos que hayas cambiado la contraseña de root
-    database: 'CarServices' // Nombre de la base de datos que acabas de crear
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'CarServices'
 };
 
 // Configurar la conexión a la base de datos con `express-myconnection`
@@ -40,10 +40,10 @@ app.get('/', (req, res) => {
     res.send('Servidor funcionando correctamente');
 });
 
-// Definir una ruta para registrar información personal
+// Definir una ruta para registrar información personal y el vehículo
 app.post('/register/personal-info', (req, res) => {
     // Recibir datos del formulario
-    const { nombre, apellido, email, telefono, direccion, ciudad, pais } = req.body;
+    const { nombre, apellido, email, telefono, placa, marca, modelo, tipo } = req.body;
 
     // Obtener la conexión a la base de datos
     req.getConnection((err, connection) => {
@@ -53,15 +53,60 @@ app.post('/register/personal-info', (req, res) => {
             return;
         }
 
-        // Ejecutar consulta para insertar el registro
-        const query = `INSERT INTO clientes (nombre, correo, numeroTelefono) VALUES (?, ?, ?)`;
-        connection.query(query, [nombre, email, telefono], (err, results) => {
+        // Iniciar una transacción para asegurar consistencia
+        connection.beginTransaction((err) => {
             if (err) {
-                console.error('Error al registrar cliente:', err);
-                res.status(500).send('Error al registrar cliente');
+                console.error('Error al iniciar la transacción:', err);
+                res.status(500).send('Error al iniciar la transacción');
                 return;
             }
-            res.send('Cliente registrado exitosamente');
+
+            // Primero registrar el cliente
+            const clienteQuery = `INSERT INTO clientes (nombre, correo, numeroTelefono) VALUES (?, ?, ?)`;
+            connection.query(clienteQuery, [nombre, email, telefono], (err, result) => {
+                if (err) {
+                    if (err.code === 'ER_DUP_ENTRY') {
+                        // Manejar el error cuando el correo ya está registrado
+                        res.status(400).send('El correo ya está registrado');
+                    } else {
+                        console.error('Error al registrar cliente:', err);
+                        res.status(500).send('Error al registrar cliente');
+                    }
+                    // Revertir la transacción si hubo un error al insertar el cliente
+                    return connection.rollback(() => {});
+                }
+
+                // Obtener el ID del cliente recién insertado
+                const clienteId = result.insertId;
+
+                // Registrar el vehículo asociado al cliente
+                const vehiculoQuery = `INSERT INTO vehiculo (placa, marca, modelo, tipo, cliente_id) VALUES (?, ?, ?, ?, ?)`;
+                connection.query(vehiculoQuery, [placa, marca, modelo, tipo, clienteId], (err, result) => {
+                    if (err) {
+                        if (err.code === 'ER_DUP_ENTRY') {
+                            // Manejar el error cuando la placa ya está registrada
+                            res.status(400).send('La placa del vehículo ya está registrada');
+                        } else {
+                            console.error('Error al registrar vehículo:', err);
+                            res.status(500).send('Error al registrar vehículo');
+                        }
+                        // Revertir la transacción si hubo un error al insertar el vehículo
+                        return connection.rollback(() => {});
+                    }
+
+                    // Confirmar la transacción si ambos registros fueron exitosos
+                    connection.commit((err) => {
+                        if (err) {
+                            console.error('Error al confirmar la transacción:', err);
+                            // Revertir la transacción si hubo un error al confirmar
+                            return connection.rollback(() => {
+                                res.status(500).send('Error al confirmar la transacción');
+                            });
+                        }
+                        res.send('Cliente y vehículo registrados exitosamente');
+                    });
+                });
+            });
         });
     });
 });

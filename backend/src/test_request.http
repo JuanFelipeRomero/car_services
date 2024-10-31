@@ -5,5 +5,9 @@ Content-Type: application/json
     "nombre": "Juan",
     "apellido": "Pérez",
     "email": "juan.perez@example.com",
-    "telefono": "123456789"
+    "telefono": "123456789",
+    "placa": "XYZ1234",
+    "marca": "Toyota",
+    "modelo": "Corolla",
+    "tipo": "Sedan"
 }
