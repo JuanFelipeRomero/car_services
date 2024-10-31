@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const mysql = require('mysql');
+const mysql = require('mysql2');  // Cambiado a 'mysql2'
 const myconnection = require('express-myconnection');
 const session = require('express-session');
 const handlebars = require('express-handlebars');
@@ -8,12 +8,13 @@ const handlebars = require('express-handlebars');
 // Crear una instancia de la aplicación Express
 const app = express();
 
-// Configuración de la base de datos
+// Configuración de la base de datos en Railway
 const dbOptions = {
-    host: 'localhost',
+    host: 'junction.proxy.rlwy.net',
     user: 'root',
-    password: '',
-    database: 'CarServices'
+    password: 'cEOQyguIDcKfGqNiEchbKZDQtdJJONvW',
+    port: 43819,
+    database: 'railway'
 };
 
 // Configurar la conexión a la base de datos con `express-myconnection`
@@ -23,14 +24,14 @@ app.use(myconnection(mysql, dbOptions, 'single'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// Configurar express-session para manejar sesiones de usuario (si deseas usarlas)
+// Configurar express-session para manejar sesiones de usuario
 app.use(session({
     secret: 'tu_secreto',
     resave: false,
     saveUninitialized: true
 }));
 
-// Configurar Handlebars como motor de plantillas (opcional si planeas renderizar vistas en el servidor)
+// Configurar Handlebars como motor de plantillas
 app.engine('hbs', handlebars.engine({ extname: '.hbs' }));
 app.set('view engine', 'hbs');
 app.set('views', './views');
@@ -107,6 +108,57 @@ app.post('/register/personal-info', (req, res) => {
                     });
                 });
             });
+        });
+    });
+});
+
+app.use(session({
+    secret: 'tu_secreto',
+    resave: false,
+    saveUninitialized: true
+}));
+
+// Rutas existentes
+app.get('/', (req, res) => {
+    res.send('Servidor funcionando correctamente');
+});
+
+app.post('/register/personal-info', (req, res) => {
+    // Aquí está el código de la ruta POST para registrar personal-info
+});
+
+// === Nueva Ruta GET para Ver Información del Cliente ===
+app.get('/profile', (req, res) => {
+    // Verificar si el cliente está autenticado y tiene sesión abierta
+    if (!req.session || !req.session.clienteId) {
+        return res.status(401).send('No has iniciado sesión');
+    }
+
+    const clienteId = req.session.clienteId;
+
+    // Obtener la conexión a la base de datos
+    req.getConnection((err, connection) => {
+        if (err) {
+            console.error('Error al conectar a la base de datos:', err);
+            res.status(500).send('Error al conectar a la base de datos');
+            return;
+        }
+
+        // Consultar la información del cliente basado en el id de la sesión
+        const query = 'SELECT nombre, correo, numeroTelefono FROM clientes WHERE id = ?';
+        connection.query(query, [clienteId], (err, results) => {
+            if (err) {
+                console.error('Error al obtener la información del cliente:', err);
+                res.status(500).send('Error al obtener la información del cliente');
+                return;
+            }
+
+            if (results.length === 0) {
+                return res.status(404).send('Cliente no encontrado');
+            }
+
+            // Enviar la información del cliente al frontend
+            res.json(results[0]);
         });
     });
 });
