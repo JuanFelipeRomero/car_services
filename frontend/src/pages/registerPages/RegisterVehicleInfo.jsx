@@ -12,19 +12,18 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Link } from 'react-router-dom';
+import ReturnBtn from '@/components/ReturnBtn';
+import { useNavigate } from 'react-router-dom';
 
 // Definimos el esquema con zod
 const formSchema = z.object({
-  marca: z.string().min(2, {}),
-  email: z.string().email({
-    message: 'Introduce un email válido.',
+  marca: z.string().min(2),
+  modelo: z.string().min(2, {
+    message: 'Minimo 3 caracteres',
   }),
-  nombreUsuario: z.string().min(2, {
-    message: 'El nombre de usuario debe tener al menos 2 caracteres.',
-  }),
-  contrasena: z.string().min(6, {
-    message: 'La contraseña debe tener al menos 6 caracteres.',
+  tipo: z.string(),
+  placa: z.string().max().min(6, {
+    message: 'La placa debe tener al menos 6 caracteres.',
   }),
 });
 
@@ -33,23 +32,24 @@ export function VehicleInfoForm() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      Marca: '',
-      Modelo: '',
-      Tipo: '',
+      marca: '',
+      modelo: '',
+      tipo: '',
       placa: '',
     },
   });
 
+  const navigate = useNavigate();
+
   // Función para manejar el envío del formulario
   const onSubmit = (values) => {
     console.log('Datos enviados:', values);
+    navigate('/');
   };
 
   return (
     <main className="pt-8">
-      <Link to="/registerpersonalinfo" className="text-black font-medium pl-20">
-        Atras
-      </Link>
+      <ReturnBtn />
       <h1 className="text-center font-medium md:text-[40px] mt-32">
         Información del vehiculo
       </h1>
@@ -76,12 +76,12 @@ export function VehicleInfoForm() {
           {/* Campo Modelo */}
           <FormField
             control={form.control}
-            name="email"
+            name="modelo"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Modelo</FormLabel>
                 <FormControl>
-                  <Input type="email" placeholder="Modelo" {...field} />
+                  <Input type="text" placeholder="Modelo" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -111,12 +111,12 @@ export function VehicleInfoForm() {
           {/* Campo PLACA*/}
           <FormField
             control={form.control}
-            name="contrasena"
+            name="placa"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Placa</FormLabel>
                 <FormControl>
-                  <Input type="text" placeholder="Placa" {...field} />
+                  <Input type="text" placeholder="ABC123" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -125,7 +125,7 @@ export function VehicleInfoForm() {
 
           {/* Confirmar */}
           <Button type="submit" className="w-full">
-            <Link to="/">Confirmar</Link>
+            Confirmar
           </Button>
         </form>
       </Form>

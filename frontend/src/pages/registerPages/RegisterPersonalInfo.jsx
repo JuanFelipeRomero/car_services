@@ -13,7 +13,8 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
-import { Link } from 'react-router-dom';
+import ReturnBtn from '@/components/ReturnBtn';
+import { useNavigate } from 'react-router-dom';
 
 // Definimos el esquema con zod
 const formSchema = z.object({
@@ -43,16 +44,17 @@ export function PersonalInfoForm() {
     },
   });
 
+  const navigate = useNavigate();
+
   // Función para manejar el envío del formulario
-  const onSubmit = (values) => {
-    console.log('Datos enviados:', values);
+  const onSubmit = (data) => {
+    console.log('Datos enviados:', data);
+    navigate('/registervehicleinfo');
   };
 
   return (
     <main className="pt-8">
-      <Link to="/polarizedinfo" className="text-black font-medium pl-20">
-        Atras
-      </Link>
+      <ReturnBtn />
       <h1 className="text-center font-medium md:text-[40px] mt-32">
         Información Personal
       </h1>
@@ -127,7 +129,7 @@ export function PersonalInfoForm() {
 
           {/* Botón de Enviar */}
           <Button type="submit" className="w-full">
-            <Link to="/registervehicleinfo">Continuar</Link>
+            Continuar
           </Button>
         </form>
       </Form>

@@ -14,6 +14,8 @@ import {
   FormLabel,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import ReturnBtn from '@/components/ReturnBtn';
+import { useNavigate } from 'react-router-dom';
 
 const loginSchema = z.object({
   username: z.string().min(2),
@@ -29,16 +31,17 @@ export function LoginPage() {
     },
   });
 
+  const navigate = useNavigate();
+
   const onSubmit = (values) => {
     console.log(`Datos enviados: `, values);
+    navigate('/');
   };
 
   return (
     <>
       <main className="h-screen w-full login-bg pt-8">
-        <a href="/registerwelcome" className="text-white font-medium pl-20">
-          Atras
-        </a>
+        <ReturnBtn color="white" />
 
         <Form {...form}>
           <form

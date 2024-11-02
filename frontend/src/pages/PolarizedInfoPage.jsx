@@ -2,9 +2,15 @@ import { NavBar } from '../components/NavBar';
 import { Button } from '@/components/ui/button';
 import { InfoCard } from '../components/InfoCard';
 import { PolarizedProductCard } from '@/components/PolarizedProductCard';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export function PolarizedInfo() {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate('/selectcar');
+  };
+
   return (
     <>
       <section className="bg-darkgray h-screen">
@@ -57,8 +63,11 @@ export function PolarizedInfo() {
               src="../src/assets/servicesInfoImg/polarizedCarImage.png"
               alt="imagen camioneta polarizada"
             />
-            <Button className="bg-white text-primary hover:text-secondary m-auto lg:w-48 md:h-12">
-              <Link to="/selectcar">Agenda Cita</Link>
+            <Button
+              onClick={handleClick}
+              className="bg-white text-primary hover:text-secondary m-auto lg:w-48 md:h-12"
+            >
+              Agenda Cita
             </Button>
           </div>
         </section>
