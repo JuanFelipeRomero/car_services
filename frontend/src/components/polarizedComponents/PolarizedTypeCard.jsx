@@ -8,7 +8,6 @@ export default function PolarizedTypeCard({
   image,
   title,
   type,
-  opacity,
   price,
 }) {
   const [isSelected, setIsSelected] = useState(false);
@@ -31,7 +30,6 @@ export default function PolarizedTypeCard({
         <CardContent>
           <p className="mt-4">{title}</p>
           <p>{type}</p>
-          <p>{opacity} de opacidad</p>
           <p className="mt-2 font-bold">${price} x metro</p>
         </CardContent>
         <Button onClick={handleClick} className="bg-blue-600 m-auto block mb-6">
