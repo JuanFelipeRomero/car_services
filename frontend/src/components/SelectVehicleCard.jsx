@@ -2,7 +2,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from './ui/button';
 import { useState } from 'react';
 
-export function SelectVehicleCard({ marca, modelo, tipo, placa }) {
+export function SelectVehicleCard({
+  marca,
+  modelo,
+  tipo,
+  placa,
+  select = true,
+}) {
   const [isSelected, setSelected] = useState(false);
 
   const handleSelect = () => {
@@ -36,12 +42,16 @@ export function SelectVehicleCard({ marca, modelo, tipo, placa }) {
           <p>{placa}</p>
         </div>
       </CardContent>
-      <Button
-        onClick={handleSelect}
-        className="bg-blue-600 w-1/3 block m-auto mb-8"
-      >
-        Seleccionar
-      </Button>
+      {select ? (
+        <Button
+          onClick={handleSelect}
+          className="bg-blue-600 m-auto block mb-6"
+        >
+          Seleccionar
+        </Button>
+      ) : (
+        ''
+      )}
     </Card>
   );
 }

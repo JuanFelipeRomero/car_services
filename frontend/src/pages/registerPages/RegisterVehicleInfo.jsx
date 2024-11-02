@@ -48,7 +48,7 @@ export function VehicleInfoForm() {
   };
 
   return (
-    <main className="pt-8">
+    <main>
       <ReturnBtn />
       <h1 className="text-center font-medium md:text-[40px] mt-32">
         Información del vehiculo

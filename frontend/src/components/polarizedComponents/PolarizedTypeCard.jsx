@@ -6,9 +6,9 @@ import { useState } from 'react';
 export default function PolarizedTypeCard({
   description,
   image,
-  title,
   type,
   price,
+  select = true,
 }) {
   const [isSelected, setIsSelected] = useState(false);
   const handleClick = () => {
@@ -18,9 +18,7 @@ export default function PolarizedTypeCard({
   const cardClassName = `${isSelected ? 'bg-blue-200' : ''}`;
 
   return (
-    <main className="md:w-1/6">
-      <h3 className=" text-center font-semibold md:text-3xl">{type}</h3>
-      <p className="text-center my-6">{description}</p>
+    <main className="md:w-1/5">
       <Card className={cardClassName}>
         <img
           src={image}
@@ -28,13 +26,20 @@ export default function PolarizedTypeCard({
           className="border-b border-b-black-500 w-full"
         />
         <CardContent>
-          <p className="mt-4">{title}</p>
-          <p>{type}</p>
+          <p className="mt-4 font-bold text-2xl">Papel {type}</p>
+          <p className="my-6">{description}</p>
           <p className="mt-2 font-bold">${price} x metro</p>
         </CardContent>
-        <Button onClick={handleClick} className="bg-blue-600 m-auto block mb-6">
-          Seleccionar
-        </Button>
+        {select ? (
+          <Button
+            onClick={handleClick}
+            className="bg-blue-600 m-auto block mb-6"
+          >
+            Seleccionar
+          </Button>
+        ) : (
+          ''
+        )}
       </Card>
     </main>
   );

@@ -2,7 +2,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '../ui/button';
 import { useState } from 'react';
 
-export default function PolarizedCoverageCard({ coverage, icon, description }) {
+export default function PolarizedCoverageCard({
+  coverage,
+  icon,
+  description,
+  select = true,
+}) {
   const [isSelected, setIsSelected] = useState(false);
   const handleClick = () => {
     setIsSelected(!isSelected);
@@ -18,9 +23,16 @@ export default function PolarizedCoverageCard({ coverage, icon, description }) {
       <CardContent>
         {icon}
         <p className="mt-6">{description}</p>
-        <Button onClick={handleClick} className="bg-blue-600 m-auto block my-4">
-          Seleccionar
-        </Button>
+        {select ? (
+          <Button
+            onClick={handleClick}
+            className="bg-blue-600 m-auto block my-6"
+          >
+            Seleccionar
+          </Button>
+        ) : (
+          ''
+        )}
       </CardContent>
     </Card>
   );

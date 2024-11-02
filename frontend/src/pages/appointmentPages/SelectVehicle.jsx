@@ -12,7 +12,7 @@ export function SelectVehicle() {
 
   return (
     <>
-      <main className="pt-8">
+      <main>
         <ReturnBtn />
         <h1 className=" font-bold md:text-4xl pl-32 mt-12">
           Polarizado de Alta Calidad

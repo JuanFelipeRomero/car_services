@@ -15,11 +15,11 @@ export function PolarizedFeatures() {
   const navigate = useNavigate();
 
   const onClick = () => {
-    navigate('');
+    navigate('/selectedpolarizedfeatures');
   };
 
   return (
-    <main className="pt-8">
+    <main className="">
       <ReturnBtn />
       <h1 className=" font-bold md:text-4xl pl-32 mt-12">
         Polarizado de Alta Calidad
@@ -107,7 +107,9 @@ export function PolarizedFeatures() {
           />
         </div>
       </section>
-      <Button className="w-1/6 mb-20 block mx-auto">Siguiente</Button>
+      <Button onClick={onClick} className="w-1/6 mb-20 block mx-auto">
+        Siguiente
+      </Button>
     </main>
   );
 }

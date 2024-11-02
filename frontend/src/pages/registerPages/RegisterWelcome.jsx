@@ -13,7 +13,7 @@ export function RegisterWelcome() {
 
   return (
     <>
-      <main className="h-screen w-full welcome-bg pt-8">
+      <main className="h-screen w-full welcome-bg">
         <ReturnBtn color={'white'} />
         <section className="h-[80%] grid items-center pl-[10%]">
           <div className="md:w-3/5">

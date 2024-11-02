@@ -8,7 +8,10 @@ export default function ReturnBtn({ color = 'black' }) {
   };
 
   return (
-    <button onClick={handleBack} className={`text-${color} font-medium pl-20`}>
+    <button
+      onClick={handleBack}
+      className={`text-${color} font-medium pl-20 mt-12`}
+    >
       Atras
     </button>
   );
