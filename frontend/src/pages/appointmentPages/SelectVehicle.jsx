@@ -1,8 +1,15 @@
 import { SelectVehicleCard } from '@/components/SelectVehicleCard';
 import { Button } from '@/components/ui/button';
 import ReturnBtn from '@/components/ReturnBtn';
+import { useNavigate } from 'react-router-dom';
 
 export function SelectVehicle() {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate('/selectpolarizedfeatures');
+  };
+
   return (
     <>
       <main className="pt-8">
@@ -27,7 +34,9 @@ export function SelectVehicle() {
             />
           </div>
 
-          <Button className="w-1/5 mt-10">Siguiente</Button>
+          <Button onClick={handleClick} className="w-1/5 mt-10">
+            Siguiente
+          </Button>
         </section>
       </main>
     </>

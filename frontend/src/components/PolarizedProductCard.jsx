@@ -6,7 +6,7 @@ export function PolarizedProductCard({ image, title, type, opacity, price }) {
       <img
         src={image}
         alt="Foto del rollo de papel polarizado"
-        className="border-b border-b-black-500"
+        className="border-b border-b-black-500 w-full"
       />
       <CardContent>
         <p className="mt-4">{title}</p>

@@ -9,9 +9,7 @@ export function SelectVehicleCard({ marca, modelo, tipo, placa }) {
     setSelected(!isSelected);
   };
 
-  const cardClassname = `w-1/5 pb-8' + ${
-    isSelected ? 'bg-blue-100' : 'bg-white'
-  }`;
+  const cardClassname = `w-1/5 + ${isSelected ? 'bg-blue-100' : 'bg-white'}`;
 
   return (
     <Card className={cardClassname}>
@@ -38,7 +36,10 @@ export function SelectVehicleCard({ marca, modelo, tipo, placa }) {
           <p>{placa}</p>
         </div>
       </CardContent>
-      <Button onClick={handleSelect} className="bg-blue-600 w-1/3 block m-auto">
+      <Button
+        onClick={handleSelect}
+        className="bg-blue-600 w-1/3 block m-auto mb-8"
+      >
         Seleccionar
       </Button>
     </Card>
