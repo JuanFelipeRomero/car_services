@@ -15,6 +15,8 @@ import { PolarizedSelectedFeatures } from './pages/appointmentPages/PolarizedSel
 import CostAndTime from './pages/appointmentPages/CostAndTime';
 import ScheduleAppointment from './pages/appointmentPages/ScheduleAppointment';
 import AppointmentConfirmed from './pages/appointmentPages/AppointmentConfirmed';
+import UserProfile from './pages/userPages/UserProfile';
+import UserAppointments from './pages/userPages/UserAppointments';
 
 const router = createBrowserRouter([
   {
@@ -40,6 +42,16 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: <LoginPage />,
+  },
+
+  //----- rutas perfil de usuario -----
+  {
+    path: '/user/profile',
+    element: <UserProfile />,
+  },
+  {
+    path: '/user/appointments',
+    element: <UserAppointments />,
   },
 
   // ----- rutas agendamiento citas -----

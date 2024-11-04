@@ -1,6 +1,17 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+
+import UserIcon from '@/assets/icons/UserIcon';
+
 export function NavBar() {
   const [isLogged, setIsLogged] = useState(false);
 
@@ -21,9 +32,30 @@ export function NavBar() {
             Contacto
           </a>
         </div>
-        <Link to="/registerwelcome" className="text-white font-medium">
-          {isLogged ? 'User' : 'Iniciar sesion'}
-        </Link>
+        {isLogged ? (
+          <Link to="/registerwelcome" className="text-white font-medium">
+            Iniciar sesion
+          </Link>
+        ) : (
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <UserIcon />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>Mi cuenta</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <Link to="/user/profile">Perfil</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link to="/user/appointments">Citas</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="text-red-600">
+                Cerrar sesion
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </nav>
     </>
   );
