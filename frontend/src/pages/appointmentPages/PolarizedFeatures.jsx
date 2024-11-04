@@ -63,7 +63,7 @@ export function PolarizedFeatures() {
       </section>
       <section className="mt-20 border-b-2 pb-32">
         <h2 className="text-center">Opacidad</h2>
-        <div className="px-20 flex gap-12">
+        <div className="px-20 flex gap-12 justify-center">
           <PolarizedOpacityCard
             opacity={'5%  (Máxima oscuridad)'}
             description={`Ofrece el mayor nivel de privacidad y bloquea la mayor cantidad de luz, proporcionando una apariencia muy oscura ideal para quienes buscan máxima discreción`}
