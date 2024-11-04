@@ -14,6 +14,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { PolarizedSelectedFeatures } from './pages/appointmentPages/PolarizedSelectedFeatures';
 import CostAndTime from './pages/appointmentPages/CostAndTime';
 import ScheduleAppointment from './pages/appointmentPages/ScheduleAppointment';
+import AppointmentConfirmed from './pages/appointmentPages/AppointmentConfirmed';
 
 const router = createBrowserRouter([
   {
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
   {
     path: '/schedule',
     element: <ScheduleAppointment />,
+  },
+  {
+    path: '/confirmed',
+    element: <AppointmentConfirmed />,
   },
 ]);
 
