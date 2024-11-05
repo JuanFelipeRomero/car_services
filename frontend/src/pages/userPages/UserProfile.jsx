@@ -1,10 +1,14 @@
-import ReturnBtn from '@/components/ReturnBtn';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { AppSidebar } from '@/components/SideBar';
 
-export default function UserProfile() {
+export default function UserProfile({ children }) {
   return (
-    <main>
-      <ReturnBtn />
-      <h1>Informacion del usuario</h1>
-    </main>
+    <SidebarProvider>
+      <AppSidebar />
+      <main>
+        <SidebarTrigger />
+        {children}
+      </main>
+    </SidebarProvider>
   );
 }

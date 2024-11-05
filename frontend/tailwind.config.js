@@ -51,15 +51,23 @@ export default {
           4: 'hsl(var(--chart-4))',
           5: 'hsl(var(--chart-5))',
         },
+        sidebar: {
+          DEFAULT: 'hsl(var(--sidebar-background))',
+          foreground: 'hsl(var(--sidebar-foreground))',
+          primary: 'hsl(var(--sidebar-primary))',
+          'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
+          accent: 'hsl(var(--sidebar-accent))',
+          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+          border: 'hsl(var(--sidebar-border))',
+          ring: 'hsl(var(--sidebar-ring))',
+        },
       },
-
       backgroundImage: {
-        hero: "url('./src/assets/backgroundImage.png')",
-        polarizedCard: "url('./src/assets/cardsImg/polarizadoscard.png')",
-        alarmCard: "url('./src/assets/cardsImg/alarmascard.png')",
-        avisosCard: "url('./src/assets/cardsImg/avisoscard.png')",
+        hero: 'url("./src/assets/backgroundImage.png")',
+        polarizedCard: 'url("./src/assets/cardsImg/polarizadoscard.png")',
+        alarmCard: 'url("./src/assets/cardsImg/alarmascard.png")',
+        avisosCard: 'url("./src/assets/cardsImg/avisoscard.png")',
       },
-
       fontFamily: {
         kanit: ['Kanit'],
         montserrat: ['montserrat'],
