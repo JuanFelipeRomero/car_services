@@ -1,170 +1,104 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const mysql = require('mysql2');  // Cambiado a 'mysql2'
-const myconnection = require('express-myconnection');
+const { Pool } = require('pg');
 const session = require('express-session');
 const handlebars = require('express-handlebars');
 
 // Crear una instancia de la aplicación Express
 const app = express();
 
-// Configuración de la base de datos en Railway
-const dbOptions = {
-    host: 'junction.proxy.rlwy.net',
-    user: 'root',
-    password: 'cEOQyguIDcKfGqNiEchbKZDQtdJJONvW',
-    port: 43819,
-    database: 'railway'
-};
-
-// Configurar la conexión a la base de datos con `express-myconnection`
-app.use(myconnection(mysql, dbOptions, 'single'));
+// Configuración de la base de datos en Railway con SSL
+const pool = new Pool({
+  host: 'dpg-csntq29u0jms7390t9p0-a.oregon-postgres.render.com',
+  user: 'admin',
+  password: 'stAPFOJaMTcGLJzEFsNQ8iE8NHEL5O2k',
+  port: 5432,
+  database: 'car_services_djba',
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
 
 // Configurar el middleware body-parser para analizar los cuerpos de las solicitudes
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Configurar express-session para manejar sesiones de usuario
-app.use(session({
+app.use(
+  session({
     secret: 'tu_secreto',
     resave: false,
-    saveUninitialized: true
-}));
+    saveUninitialized: true,
+  })
+);
 
 // Configurar Handlebars como motor de plantillas
 app.engine('hbs', handlebars.engine({ extname: '.hbs' }));
 app.set('view engine', 'hbs');
 app.set('views', './views');
 
-// Ruta principal para verificar si el servidor funciona
-app.get('/', (req, res) => {
-    res.send('Servidor funcionando correctamente');
-});
+// Ruta para registrar un cliente
+app.post('/register/client', async (req, res) => {
+  const {
+    nombre,
+    correo,
+    contrasena,
+    numeroTelefono,
+    placa,
+    marca,
+    modelo,
+    tipo,
+  } = req.body;
 
-// Definir una ruta para registrar información personal y el vehículo
-app.post('/register/personal-info', (req, res) => {
-    // Recibir datos del formulario
-    const { nombre, apellido, email, telefono, placa, marca, modelo, tipo } = req.body;
+  try {
+    // Iniciar transacción
+    await pool.query('BEGIN');
 
-    // Obtener la conexión a la base de datos
-    req.getConnection((err, connection) => {
-        if (err) {
-            console.error('Error al conectar a la base de datos:', err);
-            res.status(500).send('Error al conectar a la base de datos');
-            return;
-        }
+    // Registrar el usuario en la tabla `usuarios`
+    const usuarioQuery = `
+      INSERT INTO usuarios (nombre, correo, contrasena, numeroTelefono) 
+      VALUES ($1, $2, $3, $4) RETURNING id
+    `;
+    const usuarioResult = await pool.query(usuarioQuery, [
+      nombre,
+      correo,
+      contrasena,
+      numeroTelefono,
+    ]);
+    const usuarioId = usuarioResult.rows[0].id;
 
-        // Iniciar una transacción para asegurar consistencia
-        connection.beginTransaction((err) => {
-            if (err) {
-                console.error('Error al iniciar la transacción:', err);
-                res.status(500).send('Error al iniciar la transacción');
-                return;
-            }
+    // Registrar el cliente en la tabla `clientes` con el usuarioID
+    const clienteQuery = `
+      INSERT INTO clientes (usuarioID) 
+      VALUES ($1) RETURNING id
+    `;
+    const clienteResult = await pool.query(clienteQuery, [usuarioId]);
+    const clienteId = clienteResult.rows[0].id;
 
-            // Primero registrar el cliente
-            const clienteQuery = `INSERT INTO clientes (nombre, correo, numeroTelefono) VALUES (?, ?, ?)`;
-            connection.query(clienteQuery, [nombre, email, telefono], (err, result) => {
-                if (err) {
-                    if (err.code === 'ER_DUP_ENTRY') {
-                        // Manejar el error cuando el correo ya está registrado
-                        res.status(400).send('El correo ya está registrado');
-                    } else {
-                        console.error('Error al registrar cliente:', err);
-                        res.status(500).send('Error al registrar cliente');
-                    }
-                    // Revertir la transacción si hubo un error al insertar el cliente
-                    return connection.rollback(() => {});
-                }
+    // Registrar el vehículo en la tabla `vehiculo` con el cliente_id
+    const vehiculoQuery = `
+      INSERT INTO vehiculos (placa, marca, modelo, tipo, cliente_id) 
+      VALUES ($1, $2, $3, $4, $5)
+    `;
+    await pool.query(vehiculoQuery, [placa, marca, modelo, tipo, clienteId]);
 
-                // Obtener el ID del cliente recién insertado
-                const clienteId = result.insertId;
-
-                // Registrar el vehículo asociado al cliente
-                const vehiculoQuery = `INSERT INTO vehiculo (placa, marca, modelo, tipo, cliente_id) VALUES (?, ?, ?, ?, ?)`;
-                connection.query(vehiculoQuery, [placa, marca, modelo, tipo, clienteId], (err, result) => {
-                    if (err) {
-                        if (err.code === 'ER_DUP_ENTRY') {
-                            // Manejar el error cuando la placa ya está registrada
-                            res.status(400).send('La placa del vehículo ya está registrada');
-                        } else {
-                            console.error('Error al registrar vehículo:', err);
-                            res.status(500).send('Error al registrar vehículo');
-                        }
-                        // Revertir la transacción si hubo un error al insertar el vehículo
-                        return connection.rollback(() => {});
-                    }
-
-                    // Confirmar la transacción si ambos registros fueron exitosos
-                    connection.commit((err) => {
-                        if (err) {
-                            console.error('Error al confirmar la transacción:', err);
-                            // Revertir la transacción si hubo un error al confirmar
-                            return connection.rollback(() => {
-                                res.status(500).send('Error al confirmar la transacción');
-                            });
-                        }
-                        res.send('Cliente y vehículo registrados exitosamente');
-                    });
-                });
-            });
-        });
-    });
-});
-
-app.use(session({
-    secret: 'tu_secreto',
-    resave: false,
-    saveUninitialized: true
-}));
-
-// Rutas existentes
-app.get('/', (req, res) => {
-    res.send('Servidor funcionando correctamente');
-});
-
-app.post('/register/personal-info', (req, res) => {
-    // Aquí está el código de la ruta POST para registrar personal-info
-});
-
-// === Nueva Ruta GET para Ver Información del Cliente ===
-app.get('/profile', (req, res) => {
-    // Verificar si el cliente está autenticado y tiene sesión abierta
-    if (!req.session || !req.session.clienteId) {
-        return res.status(401).send('No has iniciado sesión');
+    // Confirmar la transacción si todos los pasos anteriores fueron exitosos
+    await pool.query('COMMIT');
+    res.send('Usuario, cliente y vehículo registrados exitosamente');
+  } catch (error) {
+    // Revertir la transacción en caso de error
+    await pool.query('ROLLBACK');
+    console.error('Error al registrar el cliente:', error);
+    if (error.code === '23505') {
+      res.status(400).send('El correo o la placa ya están registrados');
+    } else {
+      res.status(500).send('Error al registrar el cliente');
     }
-
-    const clienteId = req.session.clienteId;
-
-    // Obtener la conexión a la base de datos
-    req.getConnection((err, connection) => {
-        if (err) {
-            console.error('Error al conectar a la base de datos:', err);
-            res.status(500).send('Error al conectar a la base de datos');
-            return;
-        }
-
-        // Consultar la información del cliente basado en el id de la sesión
-        const query = 'SELECT nombre, correo, numeroTelefono FROM clientes WHERE id = ?';
-        connection.query(query, [clienteId], (err, results) => {
-            if (err) {
-                console.error('Error al obtener la información del cliente:', err);
-                res.status(500).send('Error al obtener la información del cliente');
-                return;
-            }
-
-            if (results.length === 0) {
-                return res.status(404).send('Cliente no encontrado');
-            }
-
-            // Enviar la información del cliente al frontend
-            res.json(results[0]);
-        });
-    });
+  }
 });
 
 // Iniciar el servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Servidor corriendo en el puerto ${PORT}`);
+  console.log(`Servidor corriendo en el puerto ${PORT}`);
 });

@@ -1,13 +1,13 @@
-POST http://localhost:3000/register/personal-info
+POST http://localhost:3000/register/client
 Content-Type: application/json
 
 {
-    "nombre": "Juan",
-    "apellido": "Pérez",
-    "email": "juan.perez@example.com",
-    "telefono": "123456789",
-    "placa": "XYZ1234",
-    "marca": "Toyota",
-    "modelo": "Corolla",
-    "tipo": "Sedan"
+  "nombre": "Juan",
+  "correo": "juan.perez@example.com",
+  "contrasena": "123456",
+  "numeroTelefono": 123456789,
+  "placa": "ABC123",
+  "marca": "Toyota",
+  "modelo": "Corolla",
+  "tipo": "Sedán"
 }
