@@ -1,11 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function CostCard({
-  totalCost,
-  type,
-  meterPrice,
-  covert,
-  meters,
+  totalCost = 0,
+  type = 'Nanoceramico',
+  meterPrice = 20000,
+  covert = 'laterales',
+  meters = '2',
   polarizePrice,
   workPrice = 40000,
 }) {
@@ -13,7 +13,7 @@ export default function CostCard({
   totalCost = polarizePrice + workPrice;
 
   return (
-    <Card className="md:w-1/6 p-6">
+    <Card className="md:w-1/5 p-6">
       <CardHeader className="text-center">
         <CardTitle className="mb-4">Costo</CardTitle>
         <CardTitle className="md:text-4xl">${totalCost}</CardTitle>

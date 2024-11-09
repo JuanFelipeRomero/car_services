@@ -25,6 +25,10 @@ const items = [
     url: '/user/appointments',
   },
   {
+    title: 'Citas Pasadas',
+    url: '/user/pastappointments',
+  },
+  {
     title: 'Log out',
     url: '#',
   },
