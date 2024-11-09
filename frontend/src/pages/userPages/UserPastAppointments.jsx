@@ -2,7 +2,7 @@ import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/SideBar';
 import PastAppointmentCard from '@/components/userComponents/UserPastAppointmentCard';
 
-export function UserPastAppointments() {
+export default function UserPastAppointments() {
   return (
     <SidebarProvider>
       <AppSidebar />

@@ -17,7 +17,7 @@ import ScheduleAppointment from './pages/appointmentPages/ScheduleAppointment';
 import AppointmentConfirmed from './pages/appointmentPages/AppointmentConfirmed';
 import UserProfile from './pages/userPages/UserProfile';
 import UserAppointments from './pages/userPages/UserAppointments';
-import { UserPastAppointments } from './pages/userPages/UserPastAppointments';
+import UserPastAppointments from './pages/userPages/UserPastAppointments';
 import UserVehicles from './pages/userPages/UserVehicles';
 
 const router = createBrowserRouter([
