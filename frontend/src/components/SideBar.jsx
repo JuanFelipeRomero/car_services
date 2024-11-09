@@ -1,6 +1,3 @@
-import { Calendar, Home, Inbox, Search, Settings } from 'lucide-react';
-import ReturnBtn from './ReturnBtn';
-
 import {
   Sidebar,
   SidebarContent,
@@ -11,24 +8,25 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { User } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 // Menu items.
 const items = [
   {
     title: 'Información personal',
-    url: '/',
-    icon: User,
+    url: '/user/profile',
+  },
+  {
+    title: 'Vehiculos',
+    url: '/user/cars',
   },
   {
     title: 'Citas agendadas',
-    url: '#',
-    icon: Calendar,
+    url: '/user/appointments',
   },
   {
     title: 'Log out',
     url: '#',
-    icon: Inbox,
   },
 ];
 
@@ -37,17 +35,26 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <ReturnBtn />
-          <SidebarGroupLabel className="text-3xl">Usuario</SidebarGroupLabel>
+          <button
+            className="mt-8 text-left pl-8"
+            onClick={() => (window.location.href = '/')}
+          >
+            Volver
+          </button>
+          <SidebarGroupLabel className="text-3xl mb-4 mt-8 pl-6 text-black">
+            Usuario
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
+                <SidebarMenuItem
+                  className={'mt-4 ml-4 font-semibold '}
+                  key={item.title}
+                >
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
+                    <Link to={item.url}>
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
