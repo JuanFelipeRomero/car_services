@@ -1,15 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import CostCard from '../cost and time components/CostCard';
 import TimeCard from '../cost and time components/TimeCard';
-import { Button } from '../ui/button';
 
-export function AppointmentCard({ service }) {
+export default function PastAppointmentCard({ service }) {
   return (
-    <Card className="w-[90%] mx-auto p-6">
+    <Card className="w-[90%] mx-auto p-6 bg-gray-200">
       <CardHeader>
         <div className="flex justify-between">
           <CardTitle>Service</CardTitle>
-          <span>state</span>
+          <span>Finalizada</span>
         </div>
       </CardHeader>
       <CardContent>
@@ -26,10 +25,6 @@ export function AppointmentCard({ service }) {
         <section className="flex justify-center gap-12">
           <CostCard />
           <TimeCard />
-        </section>
-        <section className="flex justify-center gap-20 mt-8">
-          <Button className="w-1/6">Reprogramar</Button>
-          <Button className="bg-red-600 w-1/6">Cancelar</Button>
         </section>
       </CardContent>
     </Card>

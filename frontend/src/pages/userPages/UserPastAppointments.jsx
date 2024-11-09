@@ -1,8 +1,8 @@
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/SideBar';
-import { AppointmentCard } from '@/components/userComponents/UserAppointmentInfoCard';
+import PastAppointmentCard from '@/components/userComponents/UserPastAppointmentCard';
 
-export default function UserAppointment() {
+export function UserPastAppointments() {
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -10,9 +10,9 @@ export default function UserAppointment() {
         <SidebarTrigger />
         <section className="">
           <h1 className="text-center text-4xl font-semibold my-12">
-            Citas agendadas
+            Citas pasadas
           </h1>
-          <AppointmentCard></AppointmentCard>
+          <PastAppointmentCard></PastAppointmentCard>
         </section>
       </main>
     </SidebarProvider>
