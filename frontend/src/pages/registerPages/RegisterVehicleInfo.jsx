@@ -33,6 +33,8 @@ const formSchema = z.object({
 });
 
 export function VehicleInfoForm() {
+  const apiUrl = import.meta.env.VITE_API_URL;
+
   const [fetchError, setFecthError] = useState(null);
 
   // Utiliza el hook useForm y pasa el resolver de zod
@@ -69,7 +71,7 @@ export function VehicleInfoForm() {
 
     try {
       // Hacer la solicitud POST al servidor con los datos combinados
-      const response = await fetch('http://localhost:3000/register/client', {
+      const response = await fetch(`${apiUrl}/register/client`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
