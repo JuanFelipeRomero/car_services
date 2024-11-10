@@ -24,8 +24,8 @@ const formSchema = z.object({
   email: z.string().email({
     message: 'Introduce un email válido.',
   }),
-  nombreUsuario: z.string().min(2, {
-    message: 'El nombre de usuario debe tener al menos 2 caracteres.',
+  telefono: z.string().regex(/^\d{9,}$/, {
+    message: 'Número de teléfono inválido, debe contener al menos 10 dígitos.',
   }),
   contrasena: z.string().min(6, {
     message: 'La contraseña debe tener al menos 6 caracteres.',
@@ -49,6 +49,11 @@ export function PersonalInfoForm() {
   // Función para manejar el envío del formulario
   const onSubmit = (data) => {
     console.log('Datos enviados:', data);
+
+    //Guardar datos en localstorage momentaneamente
+    localStorage.setItem('personalInfo', JSON.stringify(data));
+
+    //navegar a la siguiente parte del registro
     navigate('/registervehicleinfo');
   };
 
@@ -100,12 +105,12 @@ export function PersonalInfoForm() {
           {/* Campo Nombre de Usuario */}
           <FormField
             control={form.control}
-            name="nombreUsuario"
+            name="telefono"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nombre de usuario</FormLabel>
+                <FormLabel>Telefono</FormLabel>
                 <FormControl>
-                  <Input placeholder="Usuario" {...field} />
+                  <Input placeholder="321123456" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

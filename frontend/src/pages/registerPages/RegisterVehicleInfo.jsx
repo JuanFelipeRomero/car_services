@@ -11,9 +11,14 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+
+import { AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+
 import { Input } from '@/components/ui/input';
 import ReturnBtn from '@/components/ReturnBtn';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 // Definimos el esquema con zod
 const formSchema = z.object({
@@ -28,6 +33,8 @@ const formSchema = z.object({
 });
 
 export function VehicleInfoForm() {
+  const [fetchError, setFecthError] = useState(null);
+
   // Utiliza el hook useForm y pasa el resolver de zod
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -42,17 +49,67 @@ export function VehicleInfoForm() {
   const navigate = useNavigate();
 
   // Función para manejar el envío del formulario
-  const onSubmit = (values) => {
-    console.log('Datos enviados:', values);
-    navigate('/');
+  const onSubmit = async (data) => {
+    console.log('Datos enviados:', data);
+
+    //Recuperar informacion personal
+    const personalInfo = JSON.parse(localStorage.getItem('personalInfo'));
+
+    //combinar informacion personal e informacion del vehiculo
+    const fullData = {
+      nombre: personalInfo.nombre,
+      correo: personalInfo.email,
+      contrasena: personalInfo.contrasena,
+      numeroTelefono: personalInfo.telefono,
+      placa: data.placa,
+      marca: data.marca,
+      modelo: data.modelo,
+      tipo: data.tipo,
+    };
+
+    try {
+      // Hacer la solicitud POST al servidor con los datos combinados
+      const response = await fetch('http://localhost:3000/register/client', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(fullData),
+      });
+
+      // Verificar la respuesta
+      if (response.ok) {
+        console.log('Registro exitoso');
+        // Navegar nuevamente al home u otro lugar que tenga sentido después del registro
+        navigate('/');
+      } else {
+        console.error('Error en el registro:', response.statusText);
+        setFecthError(true);
+      }
+    } catch (error) {
+      console.error('Error al hacer la solicitud:', error);
+    }
   };
 
   return (
     <main>
       <ReturnBtn />
-      <h1 className="text-center font-medium md:text-[40px] mt-32">
+      <h1 className="text-center font-medium md:text-[40px] mt-24 mb-6">
         Información del vehiculo
       </h1>
+
+      {fetchError ? (
+        <Alert variant="destructive" className="w-1/2 mx-auto">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>
+            Ocurrio un problema con el registro.
+          </AlertDescription>
+        </Alert>
+      ) : (
+        ''
+      )}
+
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -91,16 +148,16 @@ export function VehicleInfoForm() {
           {/* Campo Tipo vehiculo */}
           <FormField
             control={form.control}
-            name="Tipo"
+            name="tipo"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Tipo</FormLabel>
                 <FormControl>
                   <select {...field} className="w-full p-2 border rounded-md">
-                    <option value="user">Sedan</option>
-                    <option value="user">Hatchback</option>
-                    <option value="admin">SUV</option>
-                    <option value="moderator">Pickup</option>
+                    <option value="Sedán">Sedan</option>
+                    <option value="Hatchback">Hatchback</option>
+                    <option value="SUV">SUV</option>
+                    <option value="Pickup">Pickup</option>
                   </select>
                 </FormControl>
                 <FormMessage />

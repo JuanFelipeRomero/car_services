@@ -3,9 +3,13 @@ const bodyParser = require('body-parser');
 const { Pool } = require('pg');
 const session = require('express-session');
 const handlebars = require('express-handlebars');
+const cors = require('cors');
 
 // Crear una instancia de la aplicación Express
 const app = express();
+
+//Habilitar cors para TODAS las solicitudes
+app.use(cors());
 
 // Configuración de la base de datos en Railway con SSL
 const pool = new Pool({

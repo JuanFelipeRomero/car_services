@@ -33,10 +33,6 @@ export function NavBar() {
           </a>
         </div>
         {isLogged ? (
-          <Link to="/registerwelcome" className="text-white font-medium">
-            Iniciar sesion
-          </Link>
-        ) : (
           <DropdownMenu>
             <DropdownMenuTrigger>
               <UserIcon />
@@ -55,6 +51,10 @@ export function NavBar() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+        ) : (
+          <Link to="/registerwelcome" className="text-white font-medium">
+            Iniciar sesion
+          </Link>
         )}
       </nav>
     </>
