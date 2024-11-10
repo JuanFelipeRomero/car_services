@@ -1,13 +1,11 @@
-POST http://localhost:3000/register/client
+POST http://localhost:3001/login
 Content-Type: application/json
 
 {
-  "nombre": "Juan",
-  "correo": "juan.perez@example.com",
-  "contrasena": "123456",
-  "numeroTelefono": 123456789,
-  "placa": "ABC123",
-  "marca": "Toyota",
-  "modelo": "Corolla",
-  "tipo": "Sedán"
+  "correo": "juan@ejemplo.com",
+  "contrasena": "123456"
 }
+######################################################
+GET http://localhost:3001/profile
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsIm5vbWJyZSI6Ikp1YW4iLCJjb3JyZW8iOiJqdWFuQGVqZW1wbG8uY29tIiwiaWF0IjoxNzMxMjgyMDMxLCJleHAiOjE3MzEyODU2MzF9.krMDyaEfVKxICVSLp1TxTiC_Xy_vqH3xqeTe4bo_byY
