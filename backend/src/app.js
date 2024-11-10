@@ -4,6 +4,7 @@ const { Pool } = require('pg');
 const session = require('express-session');
 const handlebars = require('express-handlebars');
 const cors = require('cors');
+require('dotenv').config();
 
 // Crear una instancia de la aplicación Express
 const app = express();
@@ -13,11 +14,11 @@ app.use(cors());
 
 // Configuración de la base de datos en Railway con SSL
 const pool = new Pool({
-  host: 'dpg-csntq29u0jms7390t9p0-a.oregon-postgres.render.com',
-  user: 'admin',
-  password: 'stAPFOJaMTcGLJzEFsNQ8iE8NHEL5O2k',
-  port: 5432,
-  database: 'car_services_djba',
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   ssl: {
     rejectUnauthorized: false,
   },
