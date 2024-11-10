@@ -11,9 +11,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import UserIcon from '@/assets/icons/UserIcon';
+import useAuthStore from '@/stores/useAuthStore';
 
 export function NavBar() {
-  const [isLogged, setIsLogged] = useState(false);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   return (
     <>
@@ -32,7 +33,7 @@ export function NavBar() {
             Contacto
           </a>
         </div>
-        {isLogged ? (
+        {isAuthenticated ? (
           <DropdownMenu>
             <DropdownMenuTrigger>
               <UserIcon />

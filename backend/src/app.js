@@ -6,8 +6,9 @@ const handlebars = require('express-handlebars');
 const cors = require('cors');
 const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 // Crear una instancia de la aplicación Express
-const app = express();
+const app = express('jsonwebtoken');
 
 //Habilitar cors para TODAS las solicitudes
 app.use(cors());
@@ -50,7 +51,7 @@ app.engine('hbs', handlebars.engine({ extname: '.hbs' }));
 app.set('view engine', 'hbs');
 app.set('views', './views');
 
-// Ruta para registrar un cliente
+// Ruta para registrar un cliente ************************************************************
 app.post('/register/client', async (req, res) => {
   const {
     nombre,
@@ -111,6 +112,72 @@ app.post('/register/client', async (req, res) => {
     } else {
       res.status(500).send('Error al registrar el cliente');
     }
+  }
+});
+
+// Ruta para iniciar sesion ***********************************************************
+app.post('/login', async (req, res) => {
+  const { correo, contrasena } = req.body;
+
+  console.log('Datos recibidos en el backend:', req.body);
+  try {
+    // Asegúrate de que los valores recibidos no sean undefined
+    console.log('Correo recibido:', correo);
+    console.log('Contraseña recibida:', contrasena);
+
+    // Buscar usuario por el correo, utilizando "$1" para parametrizar la consulta
+    const usuarioQuery = 'SELECT * FROM usuarios WHERE correo = $1';
+    const usuarioResult = await pool.query(usuarioQuery, [correo]);
+
+    if (usuarioResult.rows.length === 0) {
+      return res.status(400).send('Correo o contraseña incorrectos');
+    }
+
+    // Información del usuario obtenida
+    const usuario = usuarioResult.rows[0];
+
+    // Asegúrate de que el hash de la contraseña no sea undefined
+    console.log('Contraseña hasheada en la base de datos:', usuario.contrasena);
+
+    if (!usuario.contrasena) {
+      return res
+        .status(500)
+        .send('Contraseña no encontrada en la base de datos');
+    }
+
+    // Verificar la contraseña ingresada por el usuario
+    const contrasenaValida = await bcrypt.compare(
+      contrasena,
+      usuario.contrasena
+    );
+
+    if (!contrasenaValida) {
+      return res.status(400).send('Correo o contraseña incorrectos');
+    }
+
+    // Generar el token JWT si las credenciales son válidas
+    const token = jwt.sign(
+      {
+        id: usuario.id,
+        nombre: usuario.nombre,
+        correo: usuario.correo,
+      },
+      process.env.JWT_SECRET, // La clave secreta para firmar el token
+      { expiresIn: '1h' } // Nota: corregido `expires` a `expiresIn`
+    );
+
+    // Enviar el token y algunos datos básicos del usuario
+    res.json({
+      token,
+      user: {
+        id: usuario.id,
+        nombre: usuario.nombre,
+        correo: usuario.correo,
+      },
+    });
+  } catch (error) {
+    console.error('Error al iniciar sesión:', error);
+    res.status(500).send('Error en el servidor al intentar iniciar sesión');
   }
 });
 
