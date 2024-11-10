@@ -1,16 +1,24 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
-const { Pool } = require('pg');
 const session = require('express-session');
 const handlebars = require('express-handlebars');
 const cors = require('cors');
-require('dotenv').config();
-
+const { Pool } = require('pg');
+const bcrypt = require('bcrypt');
 // Crear una instancia de la aplicación Express
 const app = express();
 
 //Habilitar cors para TODAS las solicitudes
 app.use(cors());
+
+console.log({
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+});
 
 // Configuración de la base de datos en Railway con SSL
 const pool = new Pool({
@@ -56,6 +64,10 @@ app.post('/register/client', async (req, res) => {
   } = req.body;
 
   try {
+    //Generar un salt para hashear la contraseña
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(contrasena, saltRounds);
+
     // Iniciar transacción
     await pool.query('BEGIN');
 
@@ -67,7 +79,7 @@ app.post('/register/client', async (req, res) => {
     const usuarioResult = await pool.query(usuarioQuery, [
       nombre,
       correo,
-      contrasena,
+      hashedPassword, //Guardar la contraseña hasheada en la DB
       numeroTelefono,
     ]);
     const usuarioId = usuarioResult.rows[0].id;
