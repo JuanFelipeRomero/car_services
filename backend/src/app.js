@@ -179,26 +179,28 @@ app.post('/login', async (req, res) => {
     console.error('Error al iniciar sesión:', error);
     res.status(500).send('Error en el servidor al intentar iniciar sesión');
   }
-})
+});
 
 // Nueva ruta para consultar la información del cliente (perfil) ***********************************************************
 app.get('/profile', async (req, res) => {
-    // Obtener el token del encabezado de autorización
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-  
-    if (!token) {
-      // Si no hay token, devolver un error 401 (No autorizado)
-      return res.status(401).json({ message: 'Acceso denegado. No se proporcionó un token.' });
-    }
-  
-    try {
-      // Verificar el token
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const userId = decoded.id;
-  
+  // Obtener el token del encabezado de autorización
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    // Si no hay token, devolver un error 401 (No autorizado)
+    return res
+      .status(401)
+      .json({ message: 'Acceso denegado. No se proporcionó un token.' });
+  }
+
+  try {
+    // Verificar el token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.id;
+
     // Consulta para obtener la información del cliente basado en el userId
-        const clienteQuery = `
+    const clienteQuery = `
     SELECT 
         u.nombre AS usuario_nombre,
         u.correo AS usuario_correo,
@@ -213,23 +215,23 @@ app.get('/profile', async (req, res) => {
     LEFT JOIN vehiculos v ON c.id = v.cliente_id
     WHERE u.id = $1
         `;
-      const result = await pool.query(clienteQuery, [userId]);
-  
-      if (result.rows.length === 0) {
-        // Si no se encuentra el cliente, devolver un error 404 (No encontrado)
-        return res.status(404).json({ message: 'Cliente no encontrado.' });
-      }
-  
-      // Devolver la información del cliente
-      res.json(result.rows);
-    } catch (error) {
-      console.error('Error al verificar el token o consultar el cliente:', error);
-      res.status(403).json({ message: 'Token inválido o sesión expirada.' });
+    const result = await pool.query(clienteQuery, [userId]);
+
+    if (result.rows.length === 0) {
+      // Si no se encuentra el cliente, devolver un error 404 (No encontrado)
+      return res.status(404).json({ message: 'Cliente no encontrado.' });
     }
-  });
-  
+
+    // Devolver la información del cliente
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error al verificar el token o consultar el cliente:', error);
+    res.status(403).json({ message: 'Token inválido o sesión expirada.' });
+  }
+});
+
 // Iniciar el servidor
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
 });

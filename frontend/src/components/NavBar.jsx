@@ -12,9 +12,20 @@ import {
 
 import UserIcon from '@/assets/icons/UserIcon';
 import useAuthStore from '@/stores/useAuthStore';
+import { handler } from 'tailwindcss-animate';
+import { useNavigate } from 'react-router-dom';
 
 export function NavBar() {
+  const navigate = useNavigate();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const logOut = useAuthStore((state) => state.logout);
+
+  const handleLogOut = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    logOut();
+    navigate('/');
+  };
 
   return (
     <>
@@ -48,7 +59,7 @@ export function NavBar() {
                 <Link to="/user/appointments">Citas</Link>
               </DropdownMenuItem>
               <DropdownMenuItem className="text-red-600">
-                Cerrar sesion
+                <button onClick={handleLogOut}>Cerrar sesion</button>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
