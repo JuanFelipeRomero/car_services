@@ -13,6 +13,7 @@ const app = express('jsonwebtoken');
 //Habilitar cors para TODAS las solicitudes
 app.use(cors());
 
+`
 console.log({
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
@@ -20,6 +21,7 @@ console.log({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
 });
+`;
 
 // Configuración de la base de datos en Railway con SSL
 const pool = new Pool({
@@ -166,7 +168,7 @@ app.post('/login', async (req, res) => {
       { expiresIn: '1h' } // Nota: corregido `expires` a `expiresIn`
     );
 
-    // Enviar el token y algunos datos básicos del usuario
+    // Enviar el token con algunos datos básicos del usuario
     res.json({
       token,
       user: {
@@ -181,11 +183,11 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Nueva ruta para consultar la información del cliente (perfil) ***********************************************************
+// Ruta para consultar la información del cliente (perfil) ***********************************************************
 app.get('/profile', async (req, res) => {
   // Obtener el token del encabezado de autorización
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  const token = authHeader && authHeader.split(' ')[1]; //Separa la cadena y solo toma el token
 
   if (!token) {
     // Si no hay token, devolver un error 401 (No autorizado)
@@ -197,6 +199,7 @@ app.get('/profile', async (req, res) => {
   try {
     // Verificar el token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(decoded);
     const userId = decoded.id;
 
     // Consulta para obtener la información del cliente basado en el userId
@@ -216,6 +219,44 @@ app.get('/profile', async (req, res) => {
     WHERE u.id = $1
         `;
     const result = await pool.query(clienteQuery, [userId]);
+
+    if (result.rows.length === 0) {
+      // Si no se encuentra el cliente, devolver un error 404 (No encontrado)
+      return res.status(404).json({ message: 'Cliente no encontrado.' });
+    }
+
+    // Devolver la información del cliente
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error al verificar el token o consultar el cliente:', error);
+    res.status(403).json({ message: 'Token inválido o sesión expirada.' });
+  }
+});
+
+// Ruta para consultar los vehiculos del cliente en sesion ***********************************************************
+app.get('/uservehicles', async (req, res) => {
+  // Obtener el token del encabezado de autorización
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    // Si no hay token, devolver un error 401 (No autorizado)
+    return res
+      .status(401)
+      .json({ message: 'Acceso denegado. No se proporcionó un token.' });
+  }
+
+  try {
+    // Verificar el token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.id;
+
+    //Consulta para obtener los vehiculos del cliente con su id
+    const vehiculosQuery = `
+    SELECT * FROM vehiculos WHERE cliente_id = $1;
+    `;
+
+    const result = await pool.query(vehiculosQuery, [userId]);
 
     if (result.rows.length === 0) {
       // Si no se encuentra el cliente, devolver un error 404 (No encontrado)
