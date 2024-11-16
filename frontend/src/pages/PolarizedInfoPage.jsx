@@ -18,6 +18,8 @@ export function PolarizedInfo() {
 
   const isAuthenticated = useStore((state) => state.isAuthenticated);
 
+  window.scrollTo(0, 0);
+
   return (
     <>
       <section className="bg-darkgray h-screen">

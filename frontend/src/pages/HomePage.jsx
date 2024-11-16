@@ -24,9 +24,16 @@ export function HomePage() {
         </section>
       </section>
       <section>
-        <h2 id="servicesCards" className="text-center my-20">
-          Nuestros servicios
-        </h2>
+        <div className="w-full text-center">
+          <h2 id="servicesCards" className="mt-20">
+            Nuestros servicios
+          </h2>
+          <p className="mb-16 text-2xl">
+            Haz click en cualquiera de nuestros servicios para ver su informaion
+            completa
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 mb-32 md:grid-cols-2 lg:grid-cols-4 gap-8 md:px-32 lg:px-36">
           <Link to="/polarizedinfo">
             <ServiceCard

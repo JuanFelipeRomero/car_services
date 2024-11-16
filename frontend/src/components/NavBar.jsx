@@ -12,7 +12,6 @@ import {
 
 import UserIcon from '@/assets/icons/UserIcon';
 import useAuthStore from '@/stores/useAuthStore';
-import { handler } from 'tailwindcss-animate';
 import { useNavigate } from 'react-router-dom';
 
 export function NavBar() {
@@ -30,19 +29,16 @@ export function NavBar() {
   return (
     <>
       <nav className=" h-24 flex justify-around items-center">
-        <span className="font-kanit font-bold italic text-white lg:text-4xl md:text-3xl">
+        <Link
+          to={'/'}
+          className="font-kanit font-bold italic text-white lg:text-4xl md:text-3xl"
+        >
           CarServices
-        </span>
+        </Link>
         <div className="w-[50%] flex justify-around ">
-          <Link to="/" className="text-white lg:text-[18px]">
-            Inicio
+          <Link to="/" className="text-white lg:text-[18px] mr-28">
+            Nuestros servicios
           </Link>
-          <a href="#" className="text-white lg:text-[18px]">
-            ¿Quienes somos?
-          </a>
-          <a href="#" className="text-white lg:text-[18px]">
-            Contacto
-          </a>
         </div>
         {isAuthenticated ? (
           <DropdownMenu>
