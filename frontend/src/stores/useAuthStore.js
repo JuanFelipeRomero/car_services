@@ -7,20 +7,28 @@ const useAuthStore = create((set) => ({
   isAuthenticated: false, // Estado para saber si el usuario está autenticado
 
   //Accion para manejar inicio de sesion
-  login: (userData, token) =>
+  login: (userData, token) => {
+    // Guardar token y datos del usuario en el estado y en localStorage
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(userData));
     set({
       user: userData,
       token: token,
       isAuthenticated: true,
-    }),
+    });
+  },
 
   //Accion para manejar cierre de sesion
-  logout: () =>
+  logout: () => {
+    // Limpiar estado y localStorage cuando el usuario cierra sesión
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     set({
       user: null,
       token: null,
       isAuthenticated: false,
-    }),
+    });
+  },
 
   loadFromLocalStorage: () => {
     const token = localStorage.getItem('token');

@@ -19,6 +19,7 @@ import UserProfile from './pages/userPages/UserProfile';
 import UserAppointments from './pages/userPages/UserAppointments';
 import UserPastAppointments from './pages/userPages/UserPastAppointments';
 import UserVehicles from './pages/userPages/UserVehicles';
+import WithAuth from './WithAuth';
 
 const router = createBrowserRouter([
   {
@@ -97,6 +98,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <WithAuth>
+      <RouterProvider router={router} />
+    </WithAuth>
   </StrictMode>
 );
