@@ -111,7 +111,7 @@ export function LoginPage() {
                 <FormItem>
                   <FormLabel>Contraseña</FormLabel>
                   <FormControl>
-                    <Input type="contrasena" placeholder="****" {...field} />
+                    <Input type="password" placeholder="****" {...field} />
                   </FormControl>
                 </FormItem>
               )}

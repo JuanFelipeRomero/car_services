@@ -3,13 +3,20 @@ import { Button } from '@/components/ui/button';
 import { InfoCard } from '../components/InfoCard';
 import { PolarizedProductCard } from '@/components/PolarizedProductCard';
 import { useNavigate } from 'react-router-dom';
+import useStore from '@/stores/useAuthStore';
 
 export function PolarizedInfo() {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/selectcar');
+    if (isAuthenticated) {
+      navigate('/selectcar');
+    } else {
+      navigate('/registerwelcome');
+    }
   };
+
+  const isAuthenticated = useStore((state) => state.isAuthenticated);
 
   return (
     <>
