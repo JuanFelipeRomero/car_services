@@ -11,7 +11,6 @@ import { LoginPage } from './pages/LoginPage';
 import { SelectVehicle } from './pages/appointmentPages/SelectVehicle';
 import { PolarizedFeatures } from './pages/appointmentPages/PolarizedFeatures';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { PolarizedSelectedFeatures } from './pages/appointmentPages/PolarizedSelectedFeatures';
 import CostAndTime from './pages/appointmentPages/CostAndTime';
 import ScheduleAppointment from './pages/appointmentPages/ScheduleAppointment';
 import AppointmentConfirmed from './pages/appointmentPages/AppointmentConfirmed';
@@ -78,10 +77,10 @@ const router = createBrowserRouter([
     path: '/selectpolarizedfeatures',
     element: <PolarizedFeatures />,
   },
-  {
-    path: '/selectedpolarizedfeatures',
-    element: <PolarizedSelectedFeatures />,
-  },
+  //{
+  //  path: '/selectedpolarizedfeatures',
+  //  element: <PolarizedSelectedFeatures />,
+  //},
   {
     path: '/costandtime',
     element: <CostAndTime />,

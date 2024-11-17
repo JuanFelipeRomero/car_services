@@ -84,7 +84,7 @@ export function PolarizedFeatures() {
     setSelectedPolarizeType(selectType);
     setSelectedOpacity(selectOpacity);
     setSelectedCoverage(selectCoverage);
-    navigate('/selectedpolarizedfeatures');
+    navigate('/costandtime');
   };
 
   if (loadingPolarize || loadingCoverage) {
