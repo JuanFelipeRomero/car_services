@@ -5,6 +5,8 @@ import PolarizedCoverageCard from '@/components/polarizedComponents/PolarizedCov
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import useFetch from '@/hooks/useFetch';
+import useAppointmentStore from '@/stores/useAppointmentStore';
+import { useState } from 'react';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -53,7 +55,35 @@ export function PolarizedFeatures() {
     error: errorCoverage,
   } = useFetch(`${apiUrl}/zonas_polarizado`);
 
+  const { setSelectedPolarizeType } = useAppointmentStore();
+  const [selectType, setSelectType] = useState(null);
+
+  const { setSelectedOpacity } = useAppointmentStore();
+  const [selectOpacity, setSelectOpacity] = useState(null);
+
+  const { setSelectedCoverage } = useAppointmentStore();
+  const [selectCoverage, setSelectCoverage] = useState(null);
+
+  const handleCardTypeClick = (polarizeType) => {
+    setSelectType(polarizeType);
+  };
+
+  const handleCardOpacityClick = (opacity) => {
+    setSelectOpacity(opacity);
+  };
+
+  const handleCardCoverageClick = (coverage) => {
+    setSelectCoverage(coverage);
+  };
+
   const onClick = () => {
+    if (!selectType || !selectOpacity || !selectCoverage) {
+      alert('Falta alguna caracteristica por seleccionar');
+      return;
+    }
+    setSelectedPolarizeType(selectType);
+    setSelectedOpacity(selectOpacity);
+    setSelectedCoverage(selectCoverage);
     navigate('/selectedpolarizedfeatures');
   };
 
@@ -76,18 +106,27 @@ export function PolarizedFeatures() {
       <section className="mt-12 pb-32 border-b-2">
         <h2 className="text-center">Tipos de papel</h2>
         <div className="flex justify-evenly">
-          {dataPolarizeTypes.map((polarizado) => {
-            const { id, tipo, descripcion, preciometro } = polarizado;
-            return (
-              <PolarizedTypeCard
-                key={id}
-                image={'../src/assets/productsCards/productopolarizado.png'}
-                description={descripcion}
-                type={tipo}
-                price={preciometro}
-              />
-            );
-          })}
+          {errorPolarize ? (
+            <div className="w-full h-screen flex items-center">
+              <span className="block mx-auto text-2xl font-semibold">
+                Error al cargar los datos...
+              </span>
+            </div>
+          ) : (
+            dataPolarizeTypes.map((polarizado) => {
+              const { id, tipo, descripcion, preciometro } = polarizado;
+              return (
+                <PolarizedTypeCard
+                  key={id}
+                  image={'../src/assets/productsCards/productopolarizado.png'}
+                  description={descripcion}
+                  type={tipo}
+                  price={preciometro}
+                  onClick={() => handleCardTypeClick(polarizado)}
+                />
+              );
+            })
+          )}
         </div>
       </section>
       <section className="mt-20 border-b-2 pb-32">
@@ -101,6 +140,7 @@ export function PolarizedFeatures() {
                 value={value}
                 span={span}
                 description={description}
+                onClick={() => handleCardOpacityClick(opacidad)}
               />
             );
           })}
@@ -109,16 +149,26 @@ export function PolarizedFeatures() {
       <section className="mt-20 pb-24">
         <h2 className="text-center">Covertura</h2>
         <div className="w-full flex gap-12 justify-center">
-          {dataCoverage.map((coverage) => {
-            const { id, descripcion, nombre } = coverage;
-            return (
-              <PolarizedCoverageCard
-                key={id}
-                title={nombre}
-                description={descripcion}
-              />
-            );
-          })}
+          {errorCoverage ? (
+            <div className="w-full h-screen flex items-center">
+              <span className="block mx-auto text-2xl font-semibold">
+                Error al cargar los datos...
+              </span>
+            </div>
+          ) : (
+            dataCoverage.map((coverage) => {
+              const { id, descripcion, duracion, cantmetros, nombre } =
+                coverage;
+              return (
+                <PolarizedCoverageCard
+                  key={id}
+                  title={nombre}
+                  description={descripcion}
+                  onClick={() => handleCardCoverageClick(coverage)}
+                />
+              );
+            })
+          )}
         </div>
       </section>
       <Button onClick={onClick} className="w-1/6 mb-20 block mx-auto">

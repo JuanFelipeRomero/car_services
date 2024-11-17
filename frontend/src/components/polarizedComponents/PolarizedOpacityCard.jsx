@@ -6,13 +6,17 @@ export default function PolarizedOpacityCard({
   span,
   description,
   select = true,
+  onClick,
 }) {
   const [isSelected, setIsSelected] = useState(false);
   const handleClick = () => {
     setIsSelected(!isSelected);
+    onClick();
   };
 
-  const cardClassName = `w-1/5 flex flex-col${isSelected ? 'bg-blue-200' : ''}`;
+  const cardClassName = `w-1/5 flex flex-col ${
+    isSelected ? 'bg-blue-200' : ''
+  }`;
 
   return (
     <Card className={cardClassName}>

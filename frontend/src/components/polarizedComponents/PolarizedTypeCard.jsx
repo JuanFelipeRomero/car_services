@@ -8,10 +8,13 @@ export default function PolarizedTypeCard({
   type,
   price,
   select = true,
+  onClick,
 }) {
   const [isSelected, setIsSelected] = useState(false);
+
   const handleClick = () => {
     setIsSelected(!isSelected);
+    onClick();
   };
 
   const cardClassName = `${isSelected ? 'bg-blue-200' : ''}`;

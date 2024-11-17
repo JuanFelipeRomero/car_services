@@ -6,16 +6,23 @@ const useAppointmentStore = create(
     (set) => ({
       // Estado del vehículo seleccionado
       selectedVehicle: null,
+      selectedPolarizeType: null,
+      selectedOpacity: null,
+      selectedCoverage: null,
 
       //estados de los otros pasos del agendamiento de citas
       //...
       //...
       //...
 
-      //Action para establecer el vehiculo seleccionado
+      //Action para establecer seleccionados
       setSelectedVehicle: (vehicle) => set({ selectedVehicle: vehicle }),
+      setSelectedPolarizeType: (polarizeType) =>
+        set({ selectedPolarizeType: polarizeType }),
+      setSelectedOpacity: (opacity) => set({ selectedOpacity: opacity }),
+      setSelectedCoverage: (coverage) => set({ selectedCoverage: coverage }),
 
-      //Ation para limpiar vehiculo seleccionado
+      //Ation para limpiar
       clearSelectedVehicle: () => set({ selectedVehicle: null }),
     }),
     {
