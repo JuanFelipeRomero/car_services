@@ -1,4 +1,3 @@
-import { PolarizedProductCard } from '@/components/PolarizedProductCard';
 import { Button } from '../ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useState } from 'react';

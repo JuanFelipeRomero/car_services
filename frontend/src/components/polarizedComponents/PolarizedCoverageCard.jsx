@@ -3,8 +3,7 @@ import { Button } from '../ui/button';
 import { useState } from 'react';
 
 export default function PolarizedCoverageCard({
-  coverage,
-  icon,
+  title,
   description,
   select = true,
 }) {
@@ -18,11 +17,10 @@ export default function PolarizedCoverageCard({
   return (
     <Card className={cardClassName}>
       <CardHeader>
-        <CardTitle>{coverage}</CardTitle>
+        <CardTitle>{title}</CardTitle>
       </CardHeader>
       <CardContent>
-        {icon}
-        <p className="mt-6">{description}</p>
+        <p>{description}</p>
         {select ? (
           <Button
             onClick={handleClick}

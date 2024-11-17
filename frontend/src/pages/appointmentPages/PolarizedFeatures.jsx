@@ -49,12 +49,13 @@ export function PolarizedFeatures() {
 
   const navigate = useNavigate();
 
-  const [data, setData] = useState([]);
+  const [dataPolarizeTypes, setDataPolarizeTypes] = useState([]);
+  const [dataCoverage, setDataCoverage] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchPolarizeTypes = async () => {
       setLoading(true);
       try {
         const response = await fetch(`${apiUrl}/papeles-polarizado`);
@@ -64,9 +65,8 @@ export function PolarizedFeatures() {
         }
 
         const result = await response.json();
-        console.log(result);
 
-        setData(result);
+        setDataPolarizeTypes(result);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -74,7 +74,31 @@ export function PolarizedFeatures() {
       }
     };
 
-    fetchData();
+    fetchPolarizeTypes();
+  }, []);
+
+  useEffect(() => {
+    const fetchCoverage = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`${apiUrl}/zonas_polarizado`);
+        if (!response) {
+          // Comprobar si el fetch fue exitoso
+          throw new Error('Error al obtener los datos');
+        }
+
+        const result = await response.json();
+        console.log(result);
+
+        setDataCoverage(result);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCoverage();
   }, []);
 
   const onClick = () => {
@@ -89,8 +113,8 @@ export function PolarizedFeatures() {
       </h1>
       <section className="mt-12 pb-32 border-b-2">
         <h2 className="text-center">Tipos de papel</h2>
-        <div className="flex justify-around">
-          {data.map((polarizado) => {
+        <div className="flex justify-evenly">
+          {dataPolarizeTypes.map((polarizado) => {
             const { id, tipo, descripcion, preciometro } = polarizado;
             return (
               <PolarizedTypeCard
@@ -112,7 +136,7 @@ export function PolarizedFeatures() {
             return (
               <PolarizedOpacityCard
                 key={id}
-                value={5}
+                value={value}
                 span={span}
                 description={description}
               />
@@ -123,26 +147,16 @@ export function PolarizedFeatures() {
       <section className="mt-20 pb-24">
         <h2 className="text-center">Covertura</h2>
         <div className="w-full flex gap-12 justify-center">
-          <PolarizedCoverageCard
-            coverage={'Completo'}
-            icon={<FullCoverageIcon />}
-            description={'Polarizado del total de las ventanas del vehiculo'}
-          />
-          <PolarizedCoverageCard
-            coverage={'Laterales'}
-            icon={<LateralsIcon />}
-            description={'Polarizado del total de las ventanas del vehiculo'}
-          />
-          <PolarizedCoverageCard
-            coverage={'Frontal / Trasero'}
-            icon={<FrontBackIcon />}
-            description={'Polarizado del total de las ventanas del vehiculo'}
-          />
-          <PolarizedCoverageCard
-            coverage={'Individual'}
-            icon={<LateralIcon />}
-            description={'Polarizado del total de las ventanas del vehiculo'}
-          />
+          {dataCoverage.map((coverage) => {
+            const { id, descripcion, nombre } = coverage;
+            return (
+              <PolarizedCoverageCard
+                key={id}
+                title={nombre}
+                description={descripcion}
+              />
+            );
+          })}
         </div>
       </section>
       <Button onClick={onClick} className="w-1/6 mb-20 block mx-auto">
