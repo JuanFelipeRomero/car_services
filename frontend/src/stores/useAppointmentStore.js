@@ -1,4 +1,3 @@
-import { date } from 'zod';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -13,7 +12,7 @@ const useAppointmentStore = create(
       totalCost: null,
       totalTime: null,
       selectedDate: null,
-      selectedtTime: null,
+      selectedTime: null,
 
       //estados de los otros pasos del agendamiento de citas
       //...
@@ -29,10 +28,20 @@ const useAppointmentStore = create(
       setTotalCost: (cost) => set({ totalCost: cost }),
       setTotalTime: (time) => set({ totalTime: time }),
       setDate: (date) => set({ selectedDate: date }),
-      setTime: (time) => set({ selectedtTime: time }),
+      setTime: (time) => set({ selectedTime: time }),
 
       //Action para limpiar
-      clearSelectedVehicle: () => set({ selectedVehicle: null }),
+      clearAll: () =>
+        set({
+          selectedVehicle: null,
+          selectedPolarizeType: null,
+          selectedOpacity: null,
+          selectedCoverage: null,
+          totalCost: null,
+          totalTime: null,
+          selectedDate: null,
+          selectedTime: null,
+        }),
     }),
     {
       name: 'appointment-storage',

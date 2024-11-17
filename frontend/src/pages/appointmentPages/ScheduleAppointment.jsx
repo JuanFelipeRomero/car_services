@@ -14,7 +14,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { useNavigate } from 'react-router-dom';
 import useAppointmentStore from '@/stores/useAppointmentStore';
-import { useState } from 'react';
 import useAuthStore from '@/stores/useAuthStore';
 
 const apiUrl = import.meta.env.VITE_API_URL;
