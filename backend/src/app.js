@@ -272,7 +272,7 @@ app.get('/uservehicles', async (req, res) => {
 });
 
 // Ruta para obtener todas las citas registradas en la base de datos
-app.get('/api/citas', async (req, res) => {
+app.get('/citas', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM citas');
     if (result.rows.length === 0) {
@@ -287,22 +287,27 @@ app.get('/api/citas', async (req, res) => {
 });
 
 // Ruta para obtener toda la información de la tabla "papeles_polarizado"
-app.get('/api/papeles-polarizado', async (req, res) => {
+
+app.get('/papeles-polarizado', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM papeles_polarizado');
     if (result.rows.length === 0) {
-      res.status(200).json({ message: 'No hay papeles polarizados registrados.' });
+      res
+        .status(200)
+        .json({ message: 'No hay papeles polarizados registrados.' });
     } else {
       res.json(result.rows);
     }
   } catch (err) {
     console.error('Error al obtener los papeles polarizados:', err);
-    res.status(500).json({ message: 'Error al obtener los papeles polarizados.' });
+    res
+      .status(500)
+      .json({ message: 'Error al obtener los papeles polarizados.' });
   }
 });
 
 // Ruta para obtener toda la información de la tabla "polarizados"
-app.get('/api/polarizados', async (req, res) => {
+app.get('/polarizados', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM polarizados');
     if (result.rows.length === 0) {
@@ -317,7 +322,7 @@ app.get('/api/polarizados', async (req, res) => {
 });
 
 // Ruta para obtener toda la información de la tabla "servicios"
-app.get('/api/servicios', async (req, res) => {
+app.get('/servicios', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM servicios');
     if (result.rows.length === 0) {
@@ -332,20 +337,23 @@ app.get('/api/servicios', async (req, res) => {
 });
 
 // Ruta para obtener toda la información de la tabla "zonas_polarizado"
-app.get('/api/zonas_polarizado', async (req, res) => {
+app.get('/zonas_polarizado', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM zonas_polarizado');
     if (result.rows.length === 0) {
-      res.status(200).json({ message: 'No hay registros de zonas polarizado.' });
+      res
+        .status(200)
+        .json({ message: 'No hay registros de zonas polarizado.' });
     } else {
       res.json(result.rows);
     }
   } catch (err) {
     console.error('Error al obtener las zonas de polarizado:', err);
-    res.status(500).json({ message: 'Error al obtener las zonas de polarizado.' });
+    res
+      .status(500)
+      .json({ message: 'Error al obtener las zonas de polarizado.' });
   }
 });
-
 
 // Iniciar el servidor
 const PORT = process.env.PORT || 3000;

@@ -1,3 +1,8 @@
+
+GET http://localhost:3000/papeles-polarizado
+Content-Type: application/json
+#####
+
 # Realizar una solicitud GET para consultar todos los registros de servicios
 GET http://localhost:3000/api/servicios
 Content-Type: application/json
