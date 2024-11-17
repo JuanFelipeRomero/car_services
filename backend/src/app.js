@@ -376,7 +376,7 @@ app.post('/guardar-polariado-servicio-cita', async (req, res) => {
   }
 
   //datos de la solicitud
-  const {
+  let {
     //Datos para Polarizdos
     zona_id,
     papelpolarizado_id,
@@ -392,6 +392,17 @@ app.post('/guardar-polariado-servicio-cita', async (req, res) => {
   } = req.body;
 
   console.log('Datos recibidos en el backend:', req.body);
+  // Ajustar el formato de la fecha y hora antes de insertarlos en la base de datos
+
+  // Ajustar la fecha para extraer solo la parte `YYYY-MM-DD`
+  if (fecha && fecha.includes('T')) {
+    fecha = fecha.split('T')[0];
+  }
+
+  // Asegurar que la hora tenga el formato `HH:MM:SS`
+  if (hora && hora.length === 5) {
+    hora += ':00';
+  }
 
   try {
     //Iniciar transaccion

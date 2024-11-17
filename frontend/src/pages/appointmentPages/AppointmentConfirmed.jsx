@@ -7,6 +7,7 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import ReturnBtn from '@/components/ReturnBtn';
 
 export default function AppointmentConfirmed({
   serviceName = 'polarizado',
@@ -29,6 +30,7 @@ export default function AppointmentConfirmed({
 
   return (
     <main>
+      <ReturnBtn />
       <section className="text-center">
         <h1 className="text-center font-bold md:text-5xl mt-20 mb-8 text-green-600">
           Cita agendada

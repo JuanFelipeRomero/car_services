@@ -13,6 +13,11 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useNavigate } from 'react-router-dom';
+import useAppointmentStore from '@/stores/useAppointmentStore';
+import { useState } from 'react';
+import useAuthStore from '@/stores/useAuthStore';
+
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const appointmentSchema = z.object({
   fecha: z
@@ -36,17 +41,65 @@ export default function ScheduleAppointment() {
   });
 
   const navigate = useNavigate();
+  const token = useAuthStore((state) => state.token);
+  const { setDate, setTime } = useAppointmentStore();
 
-  //Obtener la informacion de las caracteristicas seleccionadas hasta el momento
-  const appointmentFeatures = localStorage.getItem('appointment-storage');
-  const parsedFeatures = JSON.parse(appointmentFeatures);
+  //Obtener los objetos con los datos de la cita
+  const selectedVehicle = useAppointmentStore((state) => state.selectedVehicle);
+  const selectedPolarizeType = useAppointmentStore(
+    (state) => state.selectedPolarizeType
+  );
+  const selectedOpacity = useAppointmentStore((state) => state.selectedOpacity);
+  const selectedCoverage = useAppointmentStore(
+    (state) => state.selectedCoverage
+  );
 
-  const totalCost = parsedFeatures.state.totalCost;
-  const totalTime = parsedFeatures.state.totalTime;
+  const totalCost = useAppointmentStore((state) => state.totalCost);
+  const totalTime = useAppointmentStore((state) => state.totalTime);
 
-  const onSubmit = (data) => {
-    console.log('Datos enviados: ' + data);
-    navigate('/confirmed');
+  //manejo del sibmit
+  const onSubmit = async (data) => {
+    //Tomar los datos necesarios para hacer la solicitud
+    const appointmentData = {
+      zona_id: selectedCoverage.id,
+      papelpolarizado_id: selectedPolarizeType.id,
+      opacidad: selectedOpacity.value,
+      duracion: totalTime,
+      costoaproximado: totalCost,
+      fecha: data.fecha,
+      hora: data.hora,
+      estado: 'Activa',
+      vehiculo_placa: selectedVehicle.placa,
+    };
+
+    setDate(appointmentData['fecha']);
+    setTime(appointmentData['hora']);
+
+    console.log('Datos enviados: ' + JSON.stringify(appointmentData));
+
+    try {
+      const response = await fetch(
+        `${apiUrl}/guardar-polariado-servicio-cita`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(appointmentData),
+        }
+      );
+
+      if (response.ok) {
+        console.log('Registro exitoso');
+        // Navegar nuevamente al home u otro lugar que tenga sentido después del registro
+        navigate('/confirmed');
+      } else {
+        console.error('Error en el agendamiento:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error al hacer la solicitud:', error);
+    }
   };
 
   return (
