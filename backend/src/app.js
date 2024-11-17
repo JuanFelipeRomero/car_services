@@ -354,6 +354,106 @@ app.get('/zonas_polarizado', async (req, res) => {
       .json({ message: 'Error al obtener las zonas de polarizado.' });
   }
 });
+
+// Ruta para guardar un polarizado en la tabla polarizados ******************************************
+app.post('/guardar-polariado-servicio-cita', async (req, res) => {
+  // Obtener el token del encabezado de autorización
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; //Separa la cadena y solo toma el token
+
+  if (!token) {
+    return res.status(401).send('Token de acceso requerido');
+  }
+
+  let userId;
+
+  try {
+    // Verificar el token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    userId = decoded.id;
+  } catch (error) {
+    return res.status(403).send('Token invalido o expirado');
+  }
+
+  //datos de la solicitud
+  const {
+    //Datos para Polarizdos
+    zona_id,
+    papelpolarizado_id,
+    opacidad,
+    //Datos para servicios
+    duracion,
+    costoaproximado,
+    //Datos para citas
+    fecha,
+    hora,
+    estado,
+    vehiculo_placa,
+  } = req.body;
+
+  console.log('Datos recibidos en el backend:', req.body);
+
+  try {
+    //Iniciar transaccion
+    await pool.query('BEGIN');
+
+    //Insertar datos en polarizados
+    const polarizadosQuery = `
+      INSERT INTO polarizados (zona_id, papelpolarizado_id, opacidad)
+      VALUES ($1, $2, $3) RETURNING id
+    `;
+
+    const polarizadosResult = await pool.query(polarizadosQuery, [
+      zona_id,
+      papelpolarizado_id,
+      opacidad,
+    ]);
+
+    const polarizado_id = polarizadosResult.rows[0].id;
+
+    //Insertar datos en la tabla servicios usando "polarizaod_id"
+    const serviciosQuery = `
+      INSERT INTO servicios (duracion, costoaproximado, polarizado_id, aviso_id, radio_id, alarma_id)
+      VALUES ($1, $2, $3, $4, $5, $6) RETURNING id
+    `;
+
+    const serviciosResult = await pool.query(serviciosQuery, [
+      duracion,
+      costoaproximado,
+      polarizado_id,
+      null,
+      null,
+      null,
+    ]);
+
+    const servicio_id = serviciosResult.rows[0].id;
+
+    //Insertar datos en la tabla citas con el id del usuario
+    const citaQuery = `
+      INSERT INTO citas (fecha, hora, servicio_id, estado, vehiculo_placa, cliente_id)
+      VALUES ($1, $2, $3, $4, $5, $6) RETURNING id
+    `;
+
+    await pool.query(citaQuery, [
+      fecha,
+      hora,
+      servicio_id,
+      'Activa',
+      vehiculo_placa,
+      userId,
+    ]);
+
+    // Confirmar la transacción si todos los pasos anteriores fueron exitosos
+    await pool.query('COMMIT');
+    res.send('Cita registrada exitosamente');
+  } catch (error) {
+    // Revertir la transacción en caso de error
+    await pool.query('ROLLBACK');
+    console.error('Error al registrar la cita:', error);
+    res.status(500).send('Error al registrar la cita');
+  }
+});
+
 // Ruta para obtener las citas del usuario autenticado
 app.get('/api/citas/mis-citas', async (req, res) => {
   try {
@@ -380,7 +480,9 @@ app.get('/api/citas/mis-citas', async (req, res) => {
     }
   } catch (err) {
     console.error('Error al obtener las citas del usuario:', err);
-    res.status(500).json({ message: 'Error al obtener las citas del usuario.' });
+    res
+      .status(500)
+      .json({ message: 'Error al obtener las citas del usuario.' });
   }
 });
 
