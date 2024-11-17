@@ -2,16 +2,9 @@ import ReturnBtn from '@/components/ReturnBtn';
 import PolarizedTypeCard from '@/components/polarizedComponents/PolarizedTypeCard';
 import PolarizedOpacityCard from '@/components/polarizedComponents/PolarizedOpacityCard';
 import PolarizedCoverageCard from '@/components/polarizedComponents/PolarizedCoverageCard';
-import {
-  FullCoverageIcon,
-  LateralsIcon,
-  FrontBackIcon,
-  LateralIcon,
-} from '@/assets/icons/polarizedIcons/PolarizedIcons';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import useFetch from '@/hooks/useFetch';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -49,61 +42,30 @@ export function PolarizedFeatures() {
 
   const navigate = useNavigate();
 
-  const [dataPolarizeTypes, setDataPolarizeTypes] = useState([]);
-  const [dataCoverage, setDataCoverage] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchPolarizeTypes = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(`${apiUrl}/papeles-polarizado`);
-        if (!response) {
-          // Comprobar si el fetch fue exitoso
-          throw new Error('Error al obtener los datos');
-        }
-
-        const result = await response.json();
-
-        setDataPolarizeTypes(result);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPolarizeTypes();
-  }, []);
-
-  useEffect(() => {
-    const fetchCoverage = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(`${apiUrl}/zonas_polarizado`);
-        if (!response) {
-          // Comprobar si el fetch fue exitoso
-          throw new Error('Error al obtener los datos');
-        }
-
-        const result = await response.json();
-        console.log(result);
-
-        setDataCoverage(result);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCoverage();
-  }, []);
+  const {
+    data: dataPolarizeTypes,
+    loading: loadingPolarize,
+    error: errorPolarize,
+  } = useFetch(`${apiUrl}/papeles-polarizado`);
+  const {
+    data: dataCoverage,
+    loading: loadingCoverage,
+    error: errorCoverage,
+  } = useFetch(`${apiUrl}/zonas_polarizado`);
 
   const onClick = () => {
     navigate('/selectedpolarizedfeatures');
   };
+
+  if (loadingPolarize || loadingCoverage) {
+    return (
+      <div className="w-full h-screen flex items-center">
+        <span className="block mx-auto text-2xl font-semibold">
+          Cargando...
+        </span>
+      </div>
+    );
+  }
 
   return (
     <main className="">
