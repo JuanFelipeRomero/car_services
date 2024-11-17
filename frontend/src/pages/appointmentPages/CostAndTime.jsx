@@ -5,18 +5,17 @@ import { SelectedFeatureCard } from '@/components/selectedFeaturesComponents/Sel
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import calculateTimeAndCosts from '@/logic/calculateTimeAndCost';
+import useAppointmentStore from '@/stores/useAppointmentStore';
 
 export default function ConstAndTime() {
   const navigate = useNavigate();
 
-  //Ontener la informacion de las caracteristicas seleccionadas hasta el momento
+  //Invocar las actions de la store
+  const { setTotalCost, setTotalTime } = useAppointmentStore();
+
+  //Obtener la informacion de las caracteristicas seleccionadas hasta el momento
   const appointmentFeatures = localStorage.getItem('appointment-storage');
   const parsedFeatures = JSON.parse(appointmentFeatures);
-
-  //Mostrar las caracteristicas
-  console.log(parsedFeatures.state.selectedPolarizeType);
-  console.log(parsedFeatures.state.selectedOpacity);
-  console.log(parsedFeatures.state.selectedCoverage);
 
   //asignar las variables necesitadas hasta el momento
   const vehicleType = parsedFeatures.state.selectedVehicle.tipo;
@@ -37,9 +36,6 @@ export default function ConstAndTime() {
     polarizeCoverage,
     polarizeMinutes
   );
-
-  console.log(totalCost);
-  console.log(totalTime);
 
   //Array de features para las cards
   const features = [
@@ -66,13 +62,15 @@ export default function ConstAndTime() {
   ];
 
   const handeClick = () => {
+    setTotalCost(totalCost);
+    setTotalTime(totalTime);
     navigate('/schedule');
   };
 
   return (
     <main className="w-full">
       <ReturnBtn />
-      <h1 className="text-center font-bold md:text-4xl mt-12">
+      <h1 className="text-center font-bold md:text-4xl mt-8">
         Aproximación de tiempo y costo del servicio
       </h1>
       <section className="mt-8 text-center flex justify-center gap-12">

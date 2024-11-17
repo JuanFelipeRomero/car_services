@@ -9,6 +9,8 @@ const useAppointmentStore = create(
       selectedPolarizeType: null,
       selectedOpacity: null,
       selectedCoverage: null,
+      totalCost: null,
+      totalTime: null,
 
       //estados de los otros pasos del agendamiento de citas
       //...
@@ -21,6 +23,8 @@ const useAppointmentStore = create(
         set({ selectedPolarizeType: polarizeType }),
       setSelectedOpacity: (opacity) => set({ selectedOpacity: opacity }),
       setSelectedCoverage: (coverage) => set({ selectedCoverage: coverage }),
+      setTotalCost: (cost) => set({ totalCost: cost }),
+      setTotalTime: (time) => set({ totalTime: time }),
 
       //Ation para limpiar
       clearSelectedVehicle: () => set({ selectedVehicle: null }),

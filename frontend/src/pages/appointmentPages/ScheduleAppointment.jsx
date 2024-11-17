@@ -26,10 +26,7 @@ const appointmentSchema = z.object({
   }),
 });
 
-export default function ScheduleAppointment({
-  totalCost = 120000,
-  totalTime = 3,
-}) {
+export default function ScheduleAppointment() {
   const form = useForm({
     resolver: zodResolver(appointmentSchema),
     defaultValues: {
@@ -39,6 +36,13 @@ export default function ScheduleAppointment({
   });
 
   const navigate = useNavigate();
+
+  //Obtener la informacion de las caracteristicas seleccionadas hasta el momento
+  const appointmentFeatures = localStorage.getItem('appointment-storage');
+  const parsedFeatures = JSON.parse(appointmentFeatures);
+
+  const totalCost = parsedFeatures.state.totalCost;
+  const totalTime = parsedFeatures.state.totalTime;
 
   const onSubmit = (data) => {
     console.log('Datos enviados: ' + data);
