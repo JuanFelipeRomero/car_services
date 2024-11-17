@@ -9,13 +9,17 @@ import calculateTimeAndCosts from '@/logic/calculateTimeAndCost';
 export default function ConstAndTime() {
   const navigate = useNavigate();
 
+  //Ontener la informacion de las caracteristicas seleccionadas hasta el momento
   const appointmentFeatures = localStorage.getItem('appointment-storage');
   const parsedFeatures = JSON.parse(appointmentFeatures);
 
+  //Mostrar las caracteristicas
   console.log(parsedFeatures.state.selectedPolarizeType);
   console.log(parsedFeatures.state.selectedOpacity);
   console.log(parsedFeatures.state.selectedCoverage);
 
+  //asignar las variables necesitadas hasta el momento
+  const vehicleType = parsedFeatures.state.selectedVehicle.tipo;
   const polarizeType = parsedFeatures.state.selectedPolarizeType.tipo;
   const polarizeCoverage = parsedFeatures.state.selectedCoverage.nombre;
   const polarizeMeterPrice =
@@ -25,7 +29,9 @@ export default function ConstAndTime() {
   );
   const polarizeMinutes = parsedFeatures.state.selectedCoverage.duracion;
 
-  const { totalCost, totalTime } = calculateTimeAndCosts(
+  //Invocar la funcoin para calcular el costo y el tiempo
+  const { totalCost, totalTime, workPrice } = calculateTimeAndCosts(
+    vehicleType,
     polarizeMeterPrice,
     polarizeMeters,
     polarizeCoverage,
@@ -35,6 +41,7 @@ export default function ConstAndTime() {
   console.log(totalCost);
   console.log(totalTime);
 
+  //Array de features para las cards
   const features = [
     {
       id: 1,
@@ -74,24 +81,26 @@ export default function ConstAndTime() {
           return <SelectedFeatureCard key={id} title={title} info={info} />;
         })}
       </section>
-      <section className="flex justify-center mt-12 mb-12 gap-12">
+      <section className="flex justify-center mt-6 mb-12 gap-12">
         <CostCard
-          type={'Ceramico'}
-          meterPrice={38000}
-          covert={'Laterales'}
-          meters={2}
+          totalCost={totalCost}
+          type={polarizeType}
+          meterPrice={polarizeMeterPrice}
+          covert={polarizeCoverage}
+          meters={polarizeMeters}
+          workPrice={workPrice}
         />
-        <TimeCard time={2} covert={'Laterales'} />
+        <TimeCard time={totalTime} covert={polarizeCoverage} />
       </section>
       <section className="text-center">
-        <strong className="md:text-3xl mb-4 block">¡ADVERTENCIA!</strong>
+        <strong className="md:text-2xl mb-4 block">¡ADVERTENCIA!</strong>
         <p className="text-gray-500 w-1/2 m-auto">
           Estimado cliente, tenga en cuenta que los valores calculados son
           solmente aproximaciones. La duracion y el costo puede aumentar al
           momento de prestar el servicio
         </p>
       </section>
-      <Button onClick={handeClick} className="w-1/6 mx-auto block mt-8">
+      <Button onClick={handeClick} className="w-1/6 mx-auto block mt-4">
         Siguiente
       </Button>
     </main>

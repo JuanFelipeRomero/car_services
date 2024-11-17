@@ -7,11 +7,8 @@ export default function CostCard({
   covert = 'laterales',
   meters = '2',
   polarizePrice,
-  workPrice = 40000,
+  workPrice,
 }) {
-  polarizePrice = meterPrice * meters;
-  totalCost = polarizePrice + workPrice;
-
   return (
     <Card className="md:w-1/5 p-6">
       <CardHeader className="text-center">
