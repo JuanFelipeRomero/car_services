@@ -111,9 +111,9 @@ export function PolarizedInfo() {
           <img
             src="../src/assets/servicesInfoImg/porcentajes_opacidad.png"
             alt="Imagen para ilustrar los diferentes grados de opacidad en papeles polarizados"
-            className="my-12"
+            className="mb-12 transition-transform duration-700 ease-in-out hover:scale-110"
           />
-          <p className="md:w-2/3">
+          <p className="md:w-3/4">
             Los grados de opacidad del papel polarizado varían de 5% a 50%,
             permitiendo controlar la cantidad de luz que entra al vehículo. Un
             porcentaje menor indica mayor bloqueo de luz, ofreciendo más
