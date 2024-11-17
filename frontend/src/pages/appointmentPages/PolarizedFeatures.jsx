@@ -10,9 +10,72 @@ import {
 } from '@/assets/icons/polarizedIcons/PolarizedIcons';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useEffect } from 'react';
+
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export function PolarizedFeatures() {
+  const opacity = [
+    {
+      id: 1,
+      value: 5,
+      span: 'Máxima oscuridad',
+      description:
+        'Ofrece el mayor nivel de privacidad y bloquea la mayor cantidad de luz, proporcionando una apariencia muy oscura ideal para quienes buscan máxima discreción',
+    },
+    {
+      id: 2,
+      value: 20,
+      span: 'Polarizado Oscuro',
+      description:
+        'Ofrece un buen balance entre privacidad y visibilidad, permitiendo una notable reducción de la luz exterior, manteniendo una apariencia oscura sin comprometer tanto la visibilidad interior.',
+    },
+    {
+      id: 3,
+      value: 35,
+      span: 'Polarizado Medio',
+      description:
+        'Reduce la luz y el calor de manera efectiva, pero permite una mayor visibilidad desde el interior. Es una opción intermedia para quienes buscan confort sin una apariencia demasiado',
+    },
+    {
+      id: 4,
+      value: 50,
+      span: 'Polarizado Ligero',
+      description:
+        'Ofrece protección solar sin oscurecer demasiado las ventanas, permitiendo una visibilidad clara desde el interior. Ideal para quienes prefieren una reducción de luz suave.',
+    },
+  ];
+
   const navigate = useNavigate();
+
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`${apiUrl}/papeles-polarizado`);
+        if (!response) {
+          // Comprobar si el fetch fue exitoso
+          throw new Error('Error al obtener los datos');
+        }
+
+        const result = await response.json();
+        console.log(result);
+
+        setData(result);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const onClick = () => {
     navigate('/selectedpolarizedfeatures');
@@ -26,60 +89,35 @@ export function PolarizedFeatures() {
       </h1>
       <section className="mt-12 pb-32 border-b-2">
         <h2 className="text-center">Tipos de papel</h2>
-        <div className="flex justify-evenly">
-          <PolarizedTypeCard
-            description={`Utiliza nanopartículas para ofrecer la máxima protección contra los
-            rayos solares y el calor. Proporciona una claridad superior y es
-            altamente resistente, manteniendo el color y la calidad por mucho
-            tiempo.`}
-            image={'../src/assets/productsCards/productopolarizado.png'}
-            title={'Papel polarizado'}
-            type={'Nano carbono'}
-            price={50000}
-          />
-
-          <PolarizedTypeCard
-            description={`Utiliza nanopartículas para ofrecer la máxima protección contra los
-            rayos solares y el calor. Proporciona una claridad superior y es
-            altamente resistente, manteniendo el color y la calidad por mucho
-            tiempo.`}
-            image={'../src/assets/productsCards/productopolarizado.png'}
-            title={'Papel polarizado'}
-            type={'Nano carbono'}
-            price={50000}
-          />
-
-          <PolarizedTypeCard
-            description={`Utiliza nanopartículas para ofrecer la máxima protección contra los
-            rayos solares y el calor. Proporciona una claridad superior y es
-            altamente resistente, manteniendo el color y la calidad por mucho
-            tiempo.`}
-            image={'../src/assets/productsCards/productopolarizado.png'}
-            title={'Papel polarizado'}
-            type={'Nano carbono'}
-            price={50000}
-          />
+        <div className="flex justify-around">
+          {data.map((polarizado) => {
+            const { id, tipo, descripcion, preciometro } = polarizado;
+            return (
+              <PolarizedTypeCard
+                key={id}
+                image={'../src/assets/productsCards/productopolarizado.png'}
+                description={descripcion}
+                type={tipo}
+                price={preciometro}
+              />
+            );
+          })}
         </div>
       </section>
       <section className="mt-20 border-b-2 pb-32">
         <h2 className="text-center">Opacidad</h2>
         <div className="px-20 flex gap-12 justify-center">
-          <PolarizedOpacityCard
-            opacity={'5%  (Máxima oscuridad)'}
-            description={`Ofrece el mayor nivel de privacidad y bloquea la mayor cantidad de luz, proporcionando una apariencia muy oscura ideal para quienes buscan máxima discreción`}
-          />
-          <PolarizedOpacityCard
-            opacity={'5%  (Máxima oscuridad)'}
-            description={`Ofrece el mayor nivel de privacidad y bloquea la mayor cantidad de luz, proporcionando una apariencia muy oscura ideal para quienes buscan máxima discreción`}
-          />
-          <PolarizedOpacityCard
-            opacity={'5%  (Máxima oscuridad)'}
-            description={`Ofrece el mayor nivel de privacidad y bloquea la mayor cantidad de luz, proporcionando una apariencia muy oscura ideal para quienes buscan máxima discreción`}
-          />
-          <PolarizedOpacityCard
-            opacity={'5%  (Máxima oscuridad)'}
-            description={`Ofrece el mayor nivel de privacidad y bloquea la mayor cantidad de luz, proporcionando una apariencia muy oscura ideal para quienes buscan máxima discreción`}
-          />
+          {opacity.map((opacidad) => {
+            const { id, value, span, description } = opacidad;
+            return (
+              <PolarizedOpacityCard
+                key={id}
+                value={5}
+                span={span}
+                description={description}
+              />
+            );
+          })}
         </div>
       </section>
       <section className="mt-20 pb-24">

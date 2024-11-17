@@ -4,8 +4,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useState } from 'react';
 
 export default function PolarizedTypeCard({
-  description,
   image,
+  description,
   type,
   price,
   select = true,

@@ -2,7 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '../ui/button';
 import { useState } from 'react';
 export default function PolarizedOpacityCard({
-  opacity,
+  value,
+  span,
   description,
   select = true,
 }) {
@@ -11,12 +12,14 @@ export default function PolarizedOpacityCard({
     setIsSelected(!isSelected);
   };
 
-  const cardClassName = `w-1/5 ${isSelected ? 'bg-blue-200' : ''}`;
+  const cardClassName = `w-1/5 flex flex-col${isSelected ? 'bg-blue-200' : ''}`;
 
   return (
     <Card className={cardClassName}>
       <CardHeader>
-        <CardTitle>{opacity}</CardTitle>
+        <CardTitle>
+          {value}% ({span})
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <p>{description}</p>

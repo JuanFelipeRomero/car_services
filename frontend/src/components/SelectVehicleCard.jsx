@@ -8,11 +8,13 @@ export function SelectVehicleCard({
   tipo,
   placa,
   select = true,
+  onClick,
 }) {
   const [isSelected, setSelected] = useState(false);
 
   const handleSelect = () => {
     setSelected(!isSelected);
+    onClick();
   };
 
   const cardClassname = `w-1/5 + ${isSelected ? 'bg-blue-100' : 'bg-white'}`;
