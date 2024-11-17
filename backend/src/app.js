@@ -354,6 +354,35 @@ app.get('/zonas_polarizado', async (req, res) => {
       .json({ message: 'Error al obtener las zonas de polarizado.' });
   }
 });
+// Ruta para obtener las citas del usuario autenticado
+app.get('/api/citas/mis-citas', async (req, res) => {
+  try {
+    // Asumiendo que en la autenticación se obtiene un userId del token
+    const userId = req.userId;
+
+    // Consulta SQL para obtener las citas relacionadas con el cliente basado en el userId
+    const citasQuery = `
+      SELECT c.*
+      FROM citas c
+      INNER JOIN clientes cl ON cl.id = c.cliente_id
+      INNER JOIN usuarios u ON u.id = cl.usuarioid
+      WHERE u.id = $1
+    `;
+
+    // Ejecución de la consulta
+    const result = await pool.query(citasQuery, [userId]);
+
+    // Verificar si el usuario tiene citas
+    if (result.rows.length === 0) {
+      res.status(200).json({ message: 'No tienes citas programadas.' });
+    } else {
+      res.json(result.rows);
+    }
+  } catch (err) {
+    console.error('Error al obtener las citas del usuario:', err);
+    res.status(500).json({ message: 'Error al obtener las citas del usuario.' });
+  }
+});
 
 // Iniciar el servidor
 const PORT = process.env.PORT || 3000;
