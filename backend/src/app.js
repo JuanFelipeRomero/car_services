@@ -233,38 +233,54 @@ app.get('/profile', async (req, res) => {
   }
 });
 
-// Ruta para consultar los vehiculos del cliente en sesion ***********************************************************
+//Ruta para consultar la informacion de los vehiculos de un cliente
 app.get('/uservehicles', async (req, res) => {
   // Obtener el token del encabezado de autorización
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
 
-  if (!token) {
-    // Si no hay token, devolver un error 401 (No autorizado)
+  // Verificar si el token existe y tiene el formato correcto
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res
       .status(401)
-      .json({ message: 'Acceso denegado. No se proporcionó un token.' });
+      .json({ message: 'Acceso denegado. Formato de token inválido.' });
   }
+
+  const token = authHeader.split(' ')[1];
 
   try {
     // Verificar el token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decoded.id;
 
-    //Consulta para obtener los vehiculos del cliente con su id
-    const vehiculosQuery = `
-    SELECT * FROM vehiculos WHERE cliente_id = $1;
-    `;
+    // Agregar log para depurar
+    console.log('ID del usuario decodificado del token:', userId);
 
-    const result = await pool.query(vehiculosQuery, [userId]);
+    // 1. Obtener el cliente_id correspondiente al userId
+    const clienteQuery = `SELECT id FROM clientes WHERE usuarioID = $1`;
+    const clienteResult = await pool.query(clienteQuery, [userId]);
 
-    if (result.rows.length === 0) {
-      // Si no se encuentra el cliente, devolver un error 404 (No encontrado)
+    if (clienteResult.rows.length === 0) {
+      // Si no hay un cliente correspondiente, devuelve un error 404
       return res.status(404).json({ message: 'Cliente no encontrado.' });
     }
 
-    // Devolver la información del cliente
-    res.json(result.rows);
+    const clienteId = clienteResult.rows[0].id;
+
+    // 2. Ahora buscar los vehículos con el cliente_id obtenido
+    const vehiculosQuery = `
+      SELECT * FROM vehiculos WHERE cliente_id = $1;
+    `;
+    const vehiculosResult = await pool.query(vehiculosQuery, [clienteId]);
+
+    if (vehiculosResult.rows.length === 0) {
+      // Si no se encuentran vehículos, devolver un error 404
+      return res
+        .status(404)
+        .json({ message: 'No se encontraron vehículos para este cliente.' });
+    }
+
+    // 3. Devolver la información de los vehículos
+    res.json(vehiculosResult.rows);
   } catch (error) {
     console.error('Error al verificar el token o consultar el cliente:', error);
     res.status(403).json({ message: 'Token inválido o sesión expirada.' });

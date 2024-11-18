@@ -7,6 +7,8 @@ Content-Type: application/json
 }
 
 ###
+
+###
 POST http://localhost:3000/guardar-polariado-servicio-cita
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsIm5vbWJyZSI6Ikp1YW4iLCJjb3JyZW8iOiJqdWFuQGVqZW1wbG8uY29tIiwiaWF0IjoxNzMxODc4NjAwLCJleHAiOjE3MzE4ODIyMDB9.Vowlm2icpnpe5w_DPsOu5qPRN563-ZX6Fk5WpSld-EA
