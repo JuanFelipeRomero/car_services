@@ -11,17 +11,16 @@ const jwt = require('jsonwebtoken');
 const app = express('jsonwebtoken');
 
 //Habilitar cors para TODAS las solicitudes
-app.use(cors());
-
-`
-console.log({
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-});
-`;
+//app.use(cors());
+app.use(
+  cors({
+    origin: [
+      'https://api.render.com/deploy/srv-cstec4jtq21c73a9ugf0?key=Yk4kijMHkcY',
+    ], // Cambia por la URL de tu frontend
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+  })
+);
 
 // Configuración de la base de datos en Railway con SSL
 const pool = new Pool({
