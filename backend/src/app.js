@@ -16,7 +16,9 @@ const app = express('jsonwebtoken');
 // Configurar CORS para permitir tu frontend
 const allowedOrigins = [
   'http://localhost:5173', // Para desarrollo local
-  'https://car-services-backend.onrender.com', // Cambia por la URL de tu frontend en producción
+  'https://car-services-sand.vercel.app',
+  'https://car-services-git-main-juan-romeros-projects-f4ebe484.vercel.app',
+  'https://car-services-h4fscajcv-juan-romeros-projects-f4ebe484.vercel.app',
 ];
 
 app.use(
