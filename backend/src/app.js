@@ -707,6 +707,141 @@ app.get('/citas/mis-citas-canceladas', async (req, res) => {
   }
 });
 
+// Ruta para registrar un nuevo vehículo para el cliente autenticado
+app.post('/vehiculos/nuevo', async (req, res) => {
+  // Obtener el token del encabezado de autorización
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // Separa la cadena y solo toma el token
+
+  if (!token) {
+    return res.status(401).send('Token de acceso requerido');
+  }
+
+  let userId;
+
+  try {
+    // Verificar el token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    userId = decoded.id;
+  } catch (error) {
+    return res.status(403).send('Token inválido o expirado');
+  }
+
+  // Obtener los datos del vehículo de la solicitud
+  const { placa, marca, modelo, tipo } = req.body;
+
+  if (!placa || !marca || !modelo || !tipo) {
+    return res
+      .status(400)
+      .json({ message: 'Todos los campos son obligatorios' });
+  }
+
+  try {
+    // Consulta para obtener el cliente_id relacionado al usuario
+    const clienteQuery = `SELECT id FROM clientes WHERE usuarioID = $1`;
+    const clienteResult = await pool.query(clienteQuery, [userId]);
+
+    if (clienteResult.rows.length === 0) {
+      return res.status(404).json({ message: 'Cliente no encontrado.' });
+    }
+
+    const clienteId = clienteResult.rows[0].id;
+
+    // Insertar un nuevo vehículo relacionado al cliente
+    const vehiculoQuery = `
+      INSERT INTO vehiculos (placa, marca, modelo, tipo, cliente_id)
+      VALUES ($1, $2, $3, $4, $5) RETURNING placa
+    `;
+
+    const vehiculoResult = await pool.query(vehiculoQuery, [
+      placa,
+      marca,
+      modelo,
+      tipo,
+      clienteId,
+    ]);
+
+    // Confirmar la transacción si fue exitosa
+    res.status(201).json({
+      message: 'Vehículo registrado exitosamente',
+      placa: vehiculoResult.rows[0].placa,
+    });
+  } catch (error) {
+    console.error('Error al registrar el vehículo:', error);
+    res.status(500).send('Error al registrar el vehículo');
+  }
+});
+
+//Eliminar vehiculo
+// Ruta para eliminar un vehículo del cliente autenticado
+app.delete('/vehiculos/eliminar/:placa', async (req, res) => {
+  // Obtener el token del encabezado de autorización
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // Separa la cadena y solo toma el token
+
+  if (!token) {
+    return res.status(401).send('Token de acceso requerido');
+  }
+
+  let userId;
+
+  try {
+    // Verificar el token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    userId = decoded.id;
+  } catch (error) {
+    return res.status(403).send('Token inválido o expirado');
+  }
+
+  // Obtener la placa del vehículo de los parámetros de la solicitud
+  const { placa } = req.params;
+
+  if (!placa) {
+    return res
+      .status(400)
+      .json({ message: 'La placa del vehículo es obligatoria' });
+  }
+
+  try {
+    // Consulta para obtener el cliente_id relacionado al usuario
+    const clienteQuery = `SELECT id FROM clientes WHERE usuarioID = $1`;
+    const clienteResult = await pool.query(clienteQuery, [userId]);
+
+    if (clienteResult.rows.length === 0) {
+      return res.status(404).json({ message: 'Cliente no encontrado.' });
+    }
+
+    const clienteId = clienteResult.rows[0].id;
+
+    // Eliminar el vehículo relacionado al cliente con la placa proporcionada
+    const deleteVehiculoQuery = `
+      DELETE FROM vehiculos
+      WHERE placa = $1 AND cliente_id = $2
+      RETURNING placa
+    `;
+
+    const deleteVehiculoResult = await pool.query(deleteVehiculoQuery, [
+      placa,
+      clienteId,
+    ]);
+
+    if (deleteVehiculoResult.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ message: 'Vehículo no encontrado o no pertenece al cliente.' });
+    }
+
+    // Confirmar la eliminación
+    res.status(200).json({
+      message: 'Vehículo eliminado exitosamente',
+      placa: deleteVehiculoResult.rows[0].placa,
+    });
+  } catch (error) {
+    console.error('Error al eliminar el vehículo:', error);
+    res.status(500).send('Error al eliminar el vehículo');
+  }
+});
+
 //*********************************************************************
 
 // Iniciar el servidor

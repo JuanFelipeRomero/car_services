@@ -3,31 +3,17 @@ import { AppSidebar } from '@/components/SideBar';
 import { UserVehicleCard } from '@/components/userComponents/UserVehicleCardInfo';
 import { Button } from '@/components/ui/button';
 import useAuthStore from '@/stores/useAuthStore';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Charge } from '@/components/Charge';
-import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export default function UserVehicles() {
   const token = useAuthStore((state) => state.token);
+  const navigate = useNavigate();
 
-  const vehiclesInfo = [
-    {
-      Marca: 'Renault',
-      Modelo: 'Megan',
-      Tipo: 'Automovil',
-      Placa: 'ABC123',
-    },
-    {
-      Marca: 'Chevrolet',
-      Modelo: 'Optra',
-      Tipo: 'Automovil',
-      Placa: 'DEF321',
-    },
-  ];
-
-  const [vehiclesData, setVehiclesData] = useState(null);
+  const [vehiclesData, setVehiclesData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -43,7 +29,13 @@ export default function UserVehicles() {
           },
         });
         const result = await response.json();
-        setVehiclesData(result);
+
+        // Verificar si el resultado es un arreglo
+        if (Array.isArray(result)) {
+          setVehiclesData(result);
+        } else {
+          setVehiclesData([]);
+        }
       } catch (error) {
         setError(error.message);
       } finally {
@@ -52,10 +44,45 @@ export default function UserVehicles() {
     };
 
     fetchData();
-  }, []);
+  }, [token]);
+
+  // Función para manejar la eliminación del vehículo
+  const handleDeleteVehicle = async (placa) => {
+    try {
+      const response = await fetch(`${apiUrl}/vehiculos/eliminar/${placa}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        alert('Vehículo eliminado exitosamente');
+        // Filtrar el vehículo eliminado de la lista local sin tener que volver a hacer una solicitud completa
+        setVehiclesData(
+          vehiclesData.filter((vehicle) => vehicle.placa !== placa)
+        );
+      } else {
+        const result = await response.json();
+        alert(`Error al eliminar el vehículo: ${result.message}`);
+      }
+    } catch (error) {
+      console.error('Error al conectar con el servidor:', error);
+      alert('Error al conectar con el servidor.');
+    }
+  };
+
+  const handleNewVehicle = () => {
+    navigate('/registrar-nuevo-vehiculo');
+  };
 
   if (loading) {
     return <Charge />;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
   }
 
   return (
@@ -64,10 +91,13 @@ export default function UserVehicles() {
       <main className="w-full">
         <SidebarTrigger />
         <h1 className="text-center text-4xl font-semibold my-12">
-          Vehiculos registrados
+          Vehículos registrados
         </h1>
-        <Button className="block w-1/6 mx-auto my-12 bg-blue-600">
-          Nuevo vehiculo
+        <Button
+          onClick={handleNewVehicle}
+          className="block w-1/6 mx-auto my-12 bg-blue-600"
+        >
+          Nuevo vehículo
         </Button>
         <section className="flex justify-center gap-12">
           {vehiclesData.map((vehicle) => {
@@ -79,6 +109,7 @@ export default function UserVehicles() {
                 modelo={modelo}
                 tipo={tipo}
                 placa={placa}
+                onDelete={() => handleDeleteVehicle(placa)} // Pasar la función onDelete
               />
             );
           })}

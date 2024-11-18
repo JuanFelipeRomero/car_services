@@ -20,6 +20,7 @@ import UserPastAppointments from './pages/userPages/UserPastAppointments';
 import UserVehicles from './pages/userPages/UserVehicles';
 import WithAuth from './WithAuth';
 import { UserCanceledAppointments } from './pages/userPages/UserCanceledAppointments';
+import { RegisterNewVehicle } from './pages/RegisterNewVehicle';
 
 const router = createBrowserRouter([
   {
@@ -97,6 +98,12 @@ const router = createBrowserRouter([
   {
     path: '/confirmed',
     element: <AppointmentConfirmed />,
+  },
+
+  //********************************************
+  {
+    path: '/registrar-nuevo-vehiculo',
+    element: <RegisterNewVehicle />,
   },
 ]);
 
