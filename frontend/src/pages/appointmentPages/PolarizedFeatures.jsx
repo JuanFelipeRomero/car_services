@@ -118,7 +118,7 @@ export function PolarizedFeatures() {
               return (
                 <PolarizedTypeCard
                   key={id}
-                  image={'../src/assets/productsCards/productopolarizado.png'}
+                  image={'/assets/productsCards/productopolarizado.png'}
                   description={descripcion}
                   type={tipo}
                   price={preciometro}

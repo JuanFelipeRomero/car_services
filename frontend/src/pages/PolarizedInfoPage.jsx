@@ -69,7 +69,7 @@ export function PolarizedInfo() {
           </section>
           <div className="grid items-center">
             <img
-              src="../src/assets/servicesInfoImg/polarizedCarImage.png"
+              src="/assets/servicesInfoImg/polarizedCarImage.png"
               alt="imagen camioneta polarizada"
             />
             <Button
@@ -109,7 +109,7 @@ export function PolarizedInfo() {
             Grados de opacidad
           </h2>
           <img
-            src="../src/assets/servicesInfoImg/porcentajes_opacidad.png"
+            src="/assets/servicesInfoImg/porcentajes_opacidad.png"
             alt="Imagen para ilustrar los diferentes grados de opacidad en papeles polarizados"
             className="mb-12 transition-transform duration-700 ease-in-out hover:scale-110"
           />
@@ -126,32 +126,32 @@ export function PolarizedInfo() {
         <h2 className="text-center ">Los productos que utilizamos</h2>
         <div className="flex justify-evenly">
           <PolarizedProductCard
-            image={'../src/assets/productsCards/productopolarizado.png'}
+            image={'/assets/productsCards/productopolarizado.png'}
             title={'Papel polarizado'}
-            type={'Nano carbono'}
+            type={'Carbono'}
             opacity={'5%'}
-            price={50000}
+            price={38000}
           />
           <PolarizedProductCard
-            image={'../src/assets/productsCards/productopolarizado.png'}
+            image={'/assets/productsCards/productopolarizado.png'}
             title={'Papel polarizado'}
-            type={'Nano carbono'}
-            opacity={'5%'}
-            price={50000}
+            type={'Ceramico'}
+            opacity={'35%'}
+            price={38000}
           />
           <PolarizedProductCard
-            image={'../src/assets/productsCards/productopolarizado.png'}
+            image={'/assets/productsCards/productopolarizado.png'}
             title={'Papel polarizado'}
-            type={'Nano carbono'}
-            opacity={'5%'}
-            price={50000}
+            type={'Nano Ceramico'}
+            opacity={'50%'}
+            price={48000}
           />
           <PolarizedProductCard
-            image={'../src/assets/productsCards/productopolarizado.png'}
+            image={'/assets/productsCards/productopolarizado.png'}
             title={'Papel polarizado'}
-            type={'Nano carbono'}
-            opacity={'5%'}
-            price={50000}
+            type={'Carbono'}
+            opacity={'20%'}
+            price={38000}
           />
         </div>
         <p className=" text-center lg:w-2/3 my-20 m-auto ">

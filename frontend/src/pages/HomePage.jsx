@@ -1,7 +1,6 @@
 import { NavBar } from '../components/NavBar';
 import { Button } from '@/components/ui/button';
 import { ServiceCard } from '../components/ServiceCard';
-import '../styles/cardsStyles.css';
 import { Link } from 'react-router-dom';
 
 export function HomePage() {
