@@ -63,10 +63,11 @@ export default {
         },
       },
       backgroundImage: {
-        hero: 'url("./src/assets/backgroundImage.png")',
-        polarizedCard: 'url("./src/assets/cardsImg/polarizadoscard.png")',
-        alarmCard: 'url("./src/assets/cardsImg/alarmascard.png")',
-        avisosCard: 'url("./src/assets/cardsImg/avisoscard.png")',
+        // Cambiar rutas a la carpeta public con rutas absolutas
+        hero: 'url("/assets/backgroundImage.png")',
+        polarizedCard: 'url("/assets/cardsImg/polarizadoscard.png")',
+        alarmCard: 'url("/assets/cardsImg/alarmascard.png")',
+        avisosCard: 'url("/assets/cardsImg/avisoscard.png")',
       },
       fontFamily: {
         kanit: ['Kanit'],
