@@ -11,7 +11,7 @@ import ReturnBtn from '@/components/ReturnBtn';
 import useAppointmentStore from '@/stores/useAppointmentStore';
 
 export default function AppointmentConfirmed() {
-  //Obtener los objetos con los datos de la cita
+  // Obtener los objetos con los datos de la cita
   const selectedVehicle = useAppointmentStore((state) => state.selectedVehicle);
   const selectedPolarizeType = useAppointmentStore(
     (state) => state.selectedPolarizeType
@@ -25,14 +25,24 @@ export default function AppointmentConfirmed() {
   let selectedDate = useAppointmentStore((state) => state.selectedDate);
   let selectedTime = useAppointmentStore((state) => state.selectedTime);
 
-  // Ajustar la fecha para extraer solo la parte `YYYY-MM-DD`
-  if (selectedDate && selectedDate.includes('T')) {
-    var formatedSelectedDate = selectedDate.split('T')[0];
+  // Si `selectedDate` es un objeto de tipo `Date`, formatearlo adecuadamente
+  let formatedSelectedDate = '';
+  if (selectedDate instanceof Date) {
+    formatedSelectedDate = selectedDate.toISOString().split('T')[0];
+  } else if (typeof selectedDate === 'string' && selectedDate.includes('T')) {
+    formatedSelectedDate = selectedDate.split('T')[0];
+  } else {
+    formatedSelectedDate = selectedDate || 'No disponible';
   }
 
-  // Asegurar que la hora tenga el formato `HH:MM:SS`
-  if (selectedTime && selectedTime.length === 5) {
-    var formatedSelectedTime = (selectedTime += ':00');
+  // Si `selectedTime` es un objeto de tipo `Date`, formatearlo adecuadamente
+  let formatedSelectedTime = '';
+  if (selectedTime instanceof Date) {
+    formatedSelectedTime = selectedTime.toTimeString().split(' ')[0];
+  } else if (typeof selectedTime === 'string' && selectedTime.length === 5) {
+    formatedSelectedTime = selectedTime + ':00';
+  } else {
+    formatedSelectedTime = selectedTime || 'No disponible';
   }
 
   const navigate = useNavigate();
@@ -40,7 +50,7 @@ export default function AppointmentConfirmed() {
 
   const handleClick = () => {
     localStorage.removeItem('appointment-storage');
-    clearAll();
+    clearAll(); // Asegúrate de definir `clearAll()` en el store o donde lo necesites
     navigate('/polarizedinfo');
   };
 
@@ -52,14 +62,14 @@ export default function AppointmentConfirmed() {
           Cita agendada
         </h1>
         <h3 className="text-lg t-0">
-          <strong>fecha:</strong> {formatedSelectedDate}
-          <strong> hora: </strong> {formatedSelectedTime} hrs
+          <strong>Fecha:</strong> {formatedSelectedDate}
+          <strong> Hora: </strong> {formatedSelectedTime} hrs
         </h3>
       </section>
       <section>
         <Card className="my-12 w-1/5 mx-auto">
           <CardHeader>
-            <CardTitle className="text-center">Resumen del servico</CardTitle>
+            <CardTitle className="text-center">Resumen del servicio</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
             <div>
@@ -67,20 +77,21 @@ export default function AppointmentConfirmed() {
               <CardDescription>Polarizado</CardDescription>
             </div>
             <div>
-              <p>Vehiculo</p>
+              <p>Vehículo</p>
               <CardDescription>
-                {selectedVehicle.marca} {selectedVehicle.modelo}
+                {selectedVehicle?.marca} {selectedVehicle?.modelo}
               </CardDescription>
             </div>
             <div>
               <p>Tipo</p>
               <CardDescription>
-                {selectedPolarizeType.tipo} {selectedOpacity.value}% de opacidad
+                {selectedPolarizeType?.tipo} {selectedOpacity?.value}% de
+                opacidad
               </CardDescription>
             </div>
             <div className="border-b-2 pb-4">
               <p>Zona</p>
-              <CardDescription>{selectedCoverage.nombre}</CardDescription>
+              <CardDescription>{selectedCoverage?.nombre}</CardDescription>
             </div>
             <div>
               <p>Costo aproximado</p>

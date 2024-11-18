@@ -187,7 +187,7 @@ app.post('/login', async (req, res) => {
 app.get('/profile', async (req, res) => {
   // Obtener el token del encabezado de autorización
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; //Separa la cadena y solo toma el token
+  const token = authHeader && authHeader.split(' ')[1]; // Separa la cadena y solo toma el token
 
   if (!token) {
     // Si no hay token, devolver un error 401 (No autorizado)
@@ -199,34 +199,26 @@ app.get('/profile', async (req, res) => {
   try {
     // Verificar el token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(decoded);
     const userId = decoded.id;
 
-    // Consulta para obtener la información del cliente basado en el userId
+    // Consulta para obtener solo la información del usuario
     const clienteQuery = `
-    SELECT 
-        u.nombre AS usuario_nombre,
-        u.correo AS usuario_correo,
-        u.numerotelefono AS usuario_telefono,
-        c.id AS cliente_id,
-        v.placa AS vehiculo_placa,
-        v.marca AS vehiculo_marca,
-        v.modelo AS vehiculo_modelo,
-        v.tipo AS vehiculo_tipo
-    FROM usuarios u
-    JOIN clientes c ON u.id = c.usuarioid
-    LEFT JOIN vehiculos v ON c.id = v.cliente_id
-    WHERE u.id = $1
-        `;
+      SELECT 
+        nombre AS usuario_nombre,
+        correo AS usuario_correo,
+        numerotelefono AS usuario_telefono
+      FROM usuarios
+      WHERE id = $1
+    `;
     const result = await pool.query(clienteQuery, [userId]);
 
     if (result.rows.length === 0) {
-      // Si no se encuentra el cliente, devolver un error 404 (No encontrado)
-      return res.status(404).json({ message: 'Cliente no encontrado.' });
+      // Si no se encuentra el usuario, devolver un error 404 (No encontrado)
+      return res.status(404).json({ message: 'Usuario no encontrado.' });
     }
 
-    // Devolver la información del cliente
-    res.json(result.rows);
+    // Devolver solo la información requerida del usuario
+    res.json(result.rows[0]); // Utilizamos `result.rows[0]` para devolver un objeto en lugar de un array
   } catch (error) {
     console.error('Error al verificar el token o consultar el cliente:', error);
     res.status(403).json({ message: 'Token inválido o sesión expirada.' });
@@ -375,7 +367,7 @@ app.get('/zonas_polarizado', async (req, res) => {
 app.post('/guardar-polariado-servicio-cita', async (req, res) => {
   // Obtener el token del encabezado de autorización
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; //Separa la cadena y solo toma el token
+  const token = authHeader && authHeader.split(' ')[1]; // Separa la cadena y solo toma el token
 
   if (!token) {
     return res.status(401).send('Token de acceso requerido');
@@ -388,19 +380,19 @@ app.post('/guardar-polariado-servicio-cita', async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     userId = decoded.id;
   } catch (error) {
-    return res.status(403).send('Token invalido o expirado');
+    return res.status(403).send('Token inválido o expirado');
   }
 
-  //datos de la solicitud
+  // Datos de la solicitud
   let {
-    //Datos para Polarizdos
+    // Datos para Polarizdos
     zona_id,
     papelpolarizado_id,
     opacidad,
-    //Datos para servicios
+    // Datos para servicios
     duracion,
     costoaproximado,
-    //Datos para citas
+    // Datos para citas
     fecha,
     hora,
     estado,
@@ -408,6 +400,7 @@ app.post('/guardar-polariado-servicio-cita', async (req, res) => {
   } = req.body;
 
   console.log('Datos recibidos en el backend:', req.body);
+
   // Ajustar el formato de la fecha y hora antes de insertarlos en la base de datos
 
   // Ajustar la fecha para extraer solo la parte `YYYY-MM-DD`
@@ -421,10 +414,22 @@ app.post('/guardar-polariado-servicio-cita', async (req, res) => {
   }
 
   try {
-    //Iniciar transaccion
+    // Iniciar transacción
     await pool.query('BEGIN');
 
-    //Insertar datos en polarizados
+    // Obtener el cliente_id correspondiente al userId
+    const clienteQuery = `SELECT id FROM clientes WHERE usuarioID = $1`;
+    const clienteResult = await pool.query(clienteQuery, [userId]);
+
+    if (clienteResult.rows.length === 0) {
+      // Si no se encuentra el cliente, devolver un error 404 (No encontrado)
+      await pool.query('ROLLBACK');
+      return res.status(404).json({ message: 'Cliente no encontrado.' });
+    }
+
+    const clienteId = clienteResult.rows[0].id;
+
+    // Insertar datos en polarizados
     const polarizadosQuery = `
       INSERT INTO polarizados (zona_id, papelpolarizado_id, opacidad)
       VALUES ($1, $2, $3) RETURNING id
@@ -438,7 +443,7 @@ app.post('/guardar-polariado-servicio-cita', async (req, res) => {
 
     const polarizado_id = polarizadosResult.rows[0].id;
 
-    //Insertar datos en la tabla servicios usando "polarizaod_id"
+    // Insertar datos en la tabla servicios usando "polarizaod_id"
     const serviciosQuery = `
       INSERT INTO servicios (duracion, costoaproximado, polarizado_id, aviso_id, radio_id, alarma_id)
       VALUES ($1, $2, $3, $4, $5, $6) RETURNING id
@@ -455,7 +460,7 @@ app.post('/guardar-polariado-servicio-cita', async (req, res) => {
 
     const servicio_id = serviciosResult.rows[0].id;
 
-    //Insertar datos en la tabla citas con el id del usuario
+    // Insertar datos en la tabla citas con el id del cliente
     const citaQuery = `
       INSERT INTO citas (fecha, hora, servicio_id, estado, vehiculo_placa, cliente_id)
       VALUES ($1, $2, $3, $4, $5, $6) RETURNING id
@@ -467,7 +472,7 @@ app.post('/guardar-polariado-servicio-cita', async (req, res) => {
       servicio_id,
       'Activa',
       vehiculo_placa,
-      userId,
+      clienteId, // Utilizamos el clienteId obtenido
     ]);
 
     // Confirmar la transacción si todos los pasos anteriores fueron exitosos
