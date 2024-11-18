@@ -3,6 +3,7 @@ import { AppSidebar } from '@/components/SideBar';
 import { AppointmentCard } from '@/components/userComponents/UserAppointmentInfoCard';
 import { useState, useEffect } from 'react';
 import useAuthStore from '@/stores/useAuthStore';
+import { Charge } from '@/components/Charge';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -74,7 +75,7 @@ export default function UserAppointment() {
 
   // Validar si `appointmentsData` es null o está vacío
   if (loading) {
-    return <div>Cargando...</div>;
+    return <Charge />;
   }
 
   if (error) {

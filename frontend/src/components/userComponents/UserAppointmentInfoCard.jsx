@@ -14,7 +14,7 @@ export function AppointmentCard({
   onCancel,
 }) {
   const stateClass = `font-semibold ${
-    state === 'Activa' ? 'text-green-500' : ''
+    state === 'Activa' ? 'text-green-500' : 'text-red-500'
   }`;
 
   // Manejar el clic en el botón "Cancelar"
