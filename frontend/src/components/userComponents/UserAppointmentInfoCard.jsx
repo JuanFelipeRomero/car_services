@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '../ui/button';
 
 export function AppointmentCard({
+  citaId,
   state,
   fecha,
   hora,
@@ -10,16 +11,24 @@ export function AppointmentCard({
   type,
   opacity,
   coverage,
+  onCancel,
 }) {
   const stateClass = `font-semibold ${
     state === 'Activa' ? 'text-green-500' : ''
   }`;
 
+  // Manejar el clic en el botón "Cancelar"
+  const handleButtonClick = () => {
+    if (window.confirm('¿Estás seguro de que deseas cancelar esta cita?')) {
+      onCancel(); // Llamar a la función onCancel que ya tiene el citaId adecuado
+    }
+  };
+
   return (
     <Card className="w-[90%] mx-auto p-6">
       <CardHeader>
         <div className="flex justify-between">
-          <CardTitle>Service</CardTitle>
+          <CardTitle>Servicio</CardTitle>
           <span className={stateClass}>{state}</span>
         </div>
       </CardHeader>
@@ -67,7 +76,10 @@ export function AppointmentCard({
           </div>
         </section>
         <section className="flex justify-center gap-20 mt-8">
-          <Button className="bg-red-600 w-1/6">Cancelar</Button>
+          {/* Corregir el `onClick` para que se llame al presionar el botón */}
+          <Button onClick={handleButtonClick} className="bg-red-600 w-1/6">
+            Cancelar
+          </Button>
         </section>
       </CardContent>
     </Card>

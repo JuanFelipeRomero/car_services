@@ -27,6 +27,10 @@ const items = [
     url: '/user/appointments',
   },
   {
+    title: 'Citas canceladas',
+    url: '/user/canceledappointments',
+  },
+  {
     title: 'Citas Pasadas',
     url: '/user/pastappointments',
   },

@@ -486,8 +486,8 @@ app.post('/guardar-polariado-servicio-cita', async (req, res) => {
   }
 });
 
-// Ruta para obtener las citas del cliente autenticado con la información relevante
-app.get('/citas/mis-citas', async (req, res) => {
+// Ruta para obtener solo las citas activas del cliente autenticado con la información relevante
+app.get('/citas/mis-citas-activas', async (req, res) => {
   try {
     // Obtener el token del encabezado de autorización
     const authHeader = req.headers['authorization'];
@@ -525,41 +525,112 @@ app.get('/citas/mis-citas', async (req, res) => {
 
     const clienteId = clienteResult.rows[0].id;
 
-    // Consulta SQL simplificada para obtener los detalles de las citas necesarias
+    // Consulta SQL para obtener SOLO las citas activas del cliente basado en el clienteId
     const citasQuery = `
       SELECT 
-        c.estado,
-        c.fecha,
-        c.hora,
-        s.costoaproximado AS costo_total,
-        s.duracion,
-        pz.tipo AS tipo_polarizado,
-        p.opacidad,
-        zp.nombre AS zona_polarizado
+          c.id,  -- Agregamos el ID de la cita
+          c.estado,
+          c.fecha,
+          c.hora,
+          s.costoaproximado AS costo_total,
+          s.duracion,
+          pz.tipo AS tipo_polarizado,
+          p.opacidad,
+          zp.nombre AS zona_polarizado
       FROM citas c
       INNER JOIN servicios s ON s.id = c.servicio_id
       INNER JOIN polarizados p ON p.id = s.polarizado_id
       INNER JOIN papeles_polarizado pz ON pz.id = p.papelpolarizado_id
       INNER JOIN zonas_polarizado zp ON zp.id = p.zona_id
-      WHERE c.cliente_id = $1
+      WHERE c.cliente_id = $1 AND c.estado = 'Activa';
     `;
 
-    // Ejecutar la consulta
+    // Ejecutar la consulta con `clienteId` como parámetro
     const result = await pool.query(citasQuery, [clienteId]);
 
-    // Verificar si el cliente tiene citas programadas
+    // Verificar si el cliente tiene citas activas programadas
     if (result.rows.length === 0) {
-      res.status(200).json({ message: 'No tienes citas programadas.' });
+      res.status(200).json({ message: 'No tienes citas activas programadas.' });
     } else {
       res.json(result.rows);
     }
   } catch (err) {
-    console.error('Error al obtener las citas del usuario:', err);
+    console.error('Error al obtener las citas activas del usuario:', err);
     res
       .status(500)
-      .json({ message: 'Error al obtener las citas del usuario.' });
+      .json({ message: 'Error al obtener las citas activas del usuario.' });
   }
 });
+
+// Ruta para cambiar el estado de una cita a "Cancelada"
+app.put('/citas/cancelar/:id', async (req, res) => {
+  // Obtener el token del encabezado de autorización
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) {
+    return res.status(401).send('Token de acceso requerido');
+  }
+
+  const token = authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).send('Token de acceso requerido');
+  }
+
+  let userId;
+
+  // Verificar el token
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    userId = decoded.id;
+    console.log('Token decodificado exitosamente:', decoded);
+  } catch (error) {
+    console.error('Error al verificar el token:', error);
+    return res.status(403).send('Token inválido o expirado');
+  }
+
+  // Obtener el id de la cita de los parámetros de la URL
+  const citaId = req.params.id;
+
+  try {
+    // Obtener el cliente_id relacionado al usuario
+    const clienteQuery = `SELECT id FROM clientes WHERE usuarioID = $1`;
+    const clienteResult = await pool.query(clienteQuery, [userId]);
+
+    if (clienteResult.rows.length === 0) {
+      return res.status(404).json({ message: 'Cliente no encontrado.' });
+    }
+
+    const clienteId = clienteResult.rows[0].id;
+
+    // Verificar que la cita pertenece al cliente autenticado
+    const verificarCitaQuery = `
+      SELECT * FROM citas WHERE id = $1 AND cliente_id = $2
+    `;
+    const verificarCitaResult = await pool.query(verificarCitaQuery, [
+      citaId,
+      clienteId,
+    ]);
+
+    if (verificarCitaResult.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ message: 'Cita no encontrada o no pertenece al cliente.' });
+    }
+
+    // Actualizar el estado de la cita a "Cancelada"
+    const cancelarCitaQuery = `
+      UPDATE citas SET estado = 'Cancelada' WHERE id = $1 AND cliente_id = $2
+    `;
+    await pool.query(cancelarCitaQuery, [citaId, clienteId]);
+
+    res.status(200).json({ message: 'Cita cancelada exitosamente.' });
+  } catch (err) {
+    console.error('Error al cancelar la cita:', err);
+    res.status(500).json({ message: 'Error al cancelar la cita.' });
+  }
+});
+
+//*********************************************************************
 
 // Iniciar el servidor
 const PORT = process.env.PORT || 3000;

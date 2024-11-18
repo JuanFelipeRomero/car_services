@@ -19,6 +19,7 @@ import UserAppointments from './pages/userPages/UserAppointments';
 import UserPastAppointments from './pages/userPages/UserPastAppointments';
 import UserVehicles from './pages/userPages/UserVehicles';
 import WithAuth from './WithAuth';
+import { UserCanceledAppointments } from './pages/userPages/UserCanceledAppointments';
 
 const router = createBrowserRouter([
   {
@@ -62,6 +63,10 @@ const router = createBrowserRouter([
   {
     path: '/user/appointments',
     element: <UserAppointments />,
+  },
+  {
+    path: '/user/canceledappointments',
+    element: <UserCanceledAppointments />,
   },
   {
     path: '/user/pastappointments',
