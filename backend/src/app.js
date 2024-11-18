@@ -486,25 +486,68 @@ app.post('/guardar-polariado-servicio-cita', async (req, res) => {
   }
 });
 
-// Ruta para obtener las citas del usuario autenticado
-app.get('/api/citas/mis-citas', async (req, res) => {
+// Ruta para obtener las citas del cliente autenticado con la información relevante
+app.get('/citas/mis-citas', async (req, res) => {
   try {
-    // Asumiendo que en la autenticación se obtiene un userId del token
-    const userId = req.userId;
+    // Obtener el token del encabezado de autorización
+    const authHeader = req.headers['authorization'];
+    if (!authHeader) {
+      return res.status(401).send('Token de acceso requerido');
+    }
 
-    // Consulta SQL para obtener las citas relacionadas con el cliente basado en el userId
+    const token = authHeader.split(' ')[1];
+
+    if (!token) {
+      return res.status(401).send('Token de acceso requerido');
+    }
+
+    let userId;
+
+    // Verificar el token
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      userId = decoded.id;
+
+      // Depuración del token y del userId
+      console.log('Token decodificado exitosamente:', decoded);
+    } catch (error) {
+      console.error('Error al verificar el token:', error);
+      return res.status(403).send('Token inválido o expirado');
+    }
+
+    // Consulta para obtener el cliente_id relacionado al usuario
+    const clienteQuery = `SELECT id FROM clientes WHERE usuarioID = $1`;
+    const clienteResult = await pool.query(clienteQuery, [userId]);
+
+    if (clienteResult.rows.length === 0) {
+      return res.status(404).json({ message: 'Cliente no encontrado.' });
+    }
+
+    const clienteId = clienteResult.rows[0].id;
+
+    // Consulta SQL simplificada para obtener los detalles de las citas necesarias
     const citasQuery = `
-      SELECT c.*
+      SELECT 
+        c.estado,
+        c.fecha,
+        c.hora,
+        s.costoaproximado AS costo_total,
+        s.duracion,
+        pz.tipo AS tipo_polarizado,
+        p.opacidad,
+        zp.nombre AS zona_polarizado
       FROM citas c
-      INNER JOIN clientes cl ON cl.id = c.cliente_id
-      INNER JOIN usuarios u ON u.id = cl.usuarioid
-      WHERE u.id = $1
+      INNER JOIN servicios s ON s.id = c.servicio_id
+      INNER JOIN polarizados p ON p.id = s.polarizado_id
+      INNER JOIN papeles_polarizado pz ON pz.id = p.papelpolarizado_id
+      INNER JOIN zonas_polarizado zp ON zp.id = p.zona_id
+      WHERE c.cliente_id = $1
     `;
 
-    // Ejecución de la consulta
-    const result = await pool.query(citasQuery, [userId]);
+    // Ejecutar la consulta
+    const result = await pool.query(citasQuery, [clienteId]);
 
-    // Verificar si el usuario tiene citas
+    // Verificar si el cliente tiene citas programadas
     if (result.rows.length === 0) {
       res.status(200).json({ message: 'No tienes citas programadas.' });
     } else {
