@@ -10,19 +10,21 @@ export function UserInfoSection({ name, value }) {
 }
 
 export default function UserInfoCard({ name, email, phone }) {
-  const userInfo = {
-    Nombre: 'Juan',
-    Email: 'juan@ejemplo.com',
-    Telefono: '321234567',
-    Contraseña: '******',
-  };
-
   return (
     <Card className="w-1/4 mx-auto py-6 px-6">
-      <CardContent>
-        {Object.entries(userInfo).map(([name, value]) => {
-          return <UserInfoSection name={name} value={value} />;
-        })}
+      <CardContent className="flex flex-col gap-6 pt-6">
+        <div>
+          <b>Nombre</b>
+          <p>{name}</p>
+        </div>
+        <div>
+          <b>Correo</b>
+          <p>{email}</p>
+        </div>
+        <div>
+          <b>Telefono</b>
+          <p>{phone}</p>
+        </div>
       </CardContent>
     </Card>
   );

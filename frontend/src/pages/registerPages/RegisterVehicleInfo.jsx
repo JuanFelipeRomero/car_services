@@ -69,6 +69,8 @@ export function VehicleInfoForm() {
       tipo: data.tipo,
     };
 
+    console.log(fullData);
+
     try {
       // Hacer la solicitud POST al servidor con los datos combinados
       const response = await fetch(`${apiUrl}/register/client`, {
@@ -156,7 +158,7 @@ export function VehicleInfoForm() {
                 <FormLabel>Tipo</FormLabel>
                 <FormControl>
                   <select {...field} className="w-full p-2 border rounded-md">
-                    <option value="Sedán">Sedan</option>
+                    <option value="Sedan">Sedan</option>
                     <option value="Hatchback">Hatchback</option>
                     <option value="SUV">SUV</option>
                     <option value="Pickup">Pickup</option>
