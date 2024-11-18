@@ -12,13 +12,18 @@ const app = express('jsonwebtoken');
 
 //Habilitar cors para TODAS las solicitudes
 //app.use(cors());
+
+// Configurar CORS para permitir tu frontend
+const allowedOrigins = [
+  'http://localhost:5173', // Para desarrollo local
+  'https://car-services-backend.onrender.com', // Cambia por la URL de tu frontend en producción
+];
+
 app.use(
   cors({
-    origin: [
-      'https://api.render.com/deploy/srv-cstec4jtq21c73a9ugf0?key=Yk4kijMHkcY',
-    ], // Cambia por la URL de tu frontend
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true,
+    origin: allowedOrigins,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos HTTP permitidos
+    credentials: true, // Si necesitas enviar cookies o encabezados de autenticación
   })
 );
 
