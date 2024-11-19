@@ -17,6 +17,8 @@ export function AppointmentCard({
     state === 'Activa' ? 'text-green-500' : 'text-red-500'
   }`;
 
+  const cardClass = `${state === 'Cancelada' ? 'bg-gray-200' : ''}`;
+
   // Manejar el clic en el botón "Cancelar"
   const handleButtonClick = () => {
     if (window.confirm('¿Estás seguro de que deseas cancelar esta cita?')) {
@@ -25,7 +27,7 @@ export function AppointmentCard({
   };
 
   return (
-    <Card className="w-[90%] mx-auto p-6">
+    <Card className={`w-[90%] mx-auto p-6 ${cardClass}`}>
       <CardHeader>
         <div className="flex justify-between">
           <CardTitle>Servicio</CardTitle>
@@ -76,10 +78,13 @@ export function AppointmentCard({
           </div>
         </section>
         <section className="flex justify-center gap-20 mt-8">
-          {/* Corregir el `onClick` para que se llame al presionar el botón */}
-          <Button onClick={handleButtonClick} className="bg-red-600 w-1/6">
-            Cancelar
-          </Button>
+          {state === 'Cancelada' ? (
+            ''
+          ) : (
+            <Button onClick={handleButtonClick} className="bg-red-600 w-1/6">
+              Cancelar
+            </Button>
+          )}
         </section>
       </CardContent>
     </Card>

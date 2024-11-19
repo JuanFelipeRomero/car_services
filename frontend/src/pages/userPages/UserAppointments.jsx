@@ -89,7 +89,7 @@ export default function UserAppointment() {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="w-full">
+      <main className="w-full mb-20">
         <SidebarTrigger />
         <section className="">
           <h1 className="text-center text-4xl font-semibold my-12">

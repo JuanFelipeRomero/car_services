@@ -16,8 +16,11 @@ import {
 import { Input } from '@/components/ui/input';
 import ReturnBtn from '@/components/ReturnBtn';
 import { useNavigate } from 'react-router-dom';
+import { AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 import useAuthStore from '@/stores/useAuthStore';
+import { useState } from 'react';
 
 // Definir el esquema de validación con Zod
 const loginSchema = z.object({
@@ -29,6 +32,8 @@ const loginSchema = z.object({
 
 export function LoginPage() {
   const apiUrl = import.meta.env.VITE_API_URL;
+
+  const [error, setError] = useState(false);
 
   // Configurar el hook de formulario usando `resolver` correctamente
   const form = useForm({
@@ -69,9 +74,11 @@ export function LoginPage() {
         navigate('/');
       } else {
         console.error('Error al iniciar sesión: ', response.statusText);
+        setError(true);
       }
     } catch (error) {
       console.error('Error al conectar con el servidor:', error);
+      setError(true);
     }
   };
 
@@ -85,6 +92,17 @@ export function LoginPage() {
             onSubmit={form.handleSubmit(handleLogin)}
             className="space-y-8 w-1/4 m-auto mt-40 border px-12 py-8 boder rounded-md bg-white"
           >
+            {error ? (
+              <Alert variant="destructive" className=" mx-auto">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>
+                  Ocurrio un problema el inicio de sesion.
+                </AlertDescription>
+              </Alert>
+            ) : (
+              ''
+            )}
             {/* Campo para Correo */}
             <FormField
               control={form.control}
