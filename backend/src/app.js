@@ -17,8 +17,11 @@ const app = express('jsonwebtoken');
 const allowedOrigins = [
   'http://localhost:5173', // Para desarrollo local
   'https://car-services-sand.vercel.app',
+  'https://car-services-sand.vercel.app/',
   'https://car-services-git-main-juan-romeros-projects-f4ebe484.vercel.app',
+  'https://car-services-git-main-juan-romeros-projects-f4ebe484.vercel.app/',
   'https://car-services-h4fscajcv-juan-romeros-projects-f4ebe484.vercel.app',
+  'https://car-services-h5ufsveo3-juan-romeros-projects-f4ebe484.vercel.app/',
 ];
 
 app.use(
